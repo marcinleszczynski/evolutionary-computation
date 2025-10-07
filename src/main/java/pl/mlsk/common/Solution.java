@@ -16,7 +16,7 @@ public record Solution(
         for (int i = 1; i < orderedNodes.size(); i++) {
             Node node1 = orderedNodes.get(i - 1);
             Node node2 = orderedNodes.get(i);
-            result += Node.distance(node1, node2) + node2.cost();
+            result += node1.distanceWithCost(node2);
         }
         result += Node.distance(orderedNodes.getFirst(), orderedNodes.getLast());
         return result;

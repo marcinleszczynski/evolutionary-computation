@@ -1,6 +1,8 @@
 package pl.mlsk.algorithm.impl;
 
 import org.springframework.stereotype.Service;
+import pl.mlsk.common.AlgorithmInput;
+import pl.mlsk.common.DistanceMatrix;
 import pl.mlsk.common.Node;
 import pl.mlsk.common.Solution;
 import pl.mlsk.algorithm.Algorithm;
@@ -13,7 +15,9 @@ import java.util.List;
 public class NearestNeighborLastNode implements Algorithm {
 
     @Override
-    public Solution solve(List<Node> nodes, int startNode) {
+    public Solution solve(AlgorithmInput input, int startNode) {
+        List<Node> nodes = input.nodes();
+        DistanceMatrix distanceMatrix = input.distanceMatrix();
         long nodesToTake = nodesToTake(nodes);
         List<Node> solutions = new ArrayList<>();
         List<Node> available = new ArrayList<>(nodes);
@@ -23,7 +27,7 @@ public class NearestNeighborLastNode implements Algorithm {
         for (int i = 0; i < nodesToTake - 1; i++) {
             Node closestNextNode = available
                     .stream()
-                    .min(Comparator.comparingDouble(solutions.getLast()::distanceWithCost))
+                    .min(Comparator.comparingDouble(node -> distanceMatrix.getDistance(solutions.getLast(), node)))
                     .orElse(available.get(i));
 
             solutions.add(closestNextNode);

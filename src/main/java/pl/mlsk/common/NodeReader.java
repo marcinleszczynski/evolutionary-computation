@@ -13,12 +13,14 @@ public class NodeReader {
 
     private static final String SEMICOLON = ";";
 
-    public List<Node> readNodes(String path) {
+    public AlgorithmInput readNodes(String path) {
         InputStream in = NodeReader.class.getResourceAsStream(path);
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-        return reader.lines()
+        List<Node> nodes = reader.lines()
                 .map(this::parseNode)
                 .toList();
+
+        return new AlgorithmInput(nodes, new DistanceMatrix(nodes));
     }
 
     private Node parseNode(String line) {

@@ -2,6 +2,7 @@ package pl.mlsk.algorithm.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.mlsk.common.AlgorithmInput;
 import pl.mlsk.common.Node;
 import pl.mlsk.common.Solution;
 import pl.mlsk.algorithm.Algorithm;
@@ -15,7 +16,8 @@ public class RandomSearchAlgorithm implements Algorithm {
     private final Random random;
 
     @Override
-    public Solution solve(List<Node> nodes, int startNode) {
+    public Solution solve(AlgorithmInput input, int startNode) {
+        List<Node> nodes = input.nodes();
         long nodesToTake = nodesToTake(nodes);
         List<Node> available = new ArrayList<>(nodes);
         List<Node> resultNodes = new ArrayList<>();

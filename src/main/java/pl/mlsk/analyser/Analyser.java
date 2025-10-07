@@ -3,6 +3,7 @@ package pl.mlsk.analyser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.mlsk.algorithm.Algorithm;
+import pl.mlsk.common.AlgorithmInput;
 import pl.mlsk.common.Node;
 import pl.mlsk.common.NodeReader;
 import pl.mlsk.common.Solution;
@@ -19,14 +20,15 @@ public class Analyser {
     private final NodeReader reader;
 
     public AnalysisResult analyse(String pathToData, Algorithm algorithm) {
-        List<Node> nodes = reader.readNodes(pathToData);
+        AlgorithmInput algorithmInput = reader.readNodes(pathToData);
+        List<Node> nodes = algorithmInput.nodes();
         List<Double> times = new ArrayList<>();
         List<Double> scores = new ArrayList<>();
         Solution bestSolution = null;
 
         for (int i = 0; i < nodes.size(); i++) {
             long start = System.nanoTime();
-            Solution solution = algorithm.solve(nodes, i);
+            Solution solution = algorithm.solve(algorithmInput, i);
             double time = (System.nanoTime() - start) / 1_000_000_000.0;
             times.add(time);
             scores.add(solution.evaluate());

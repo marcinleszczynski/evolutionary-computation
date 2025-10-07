@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import pl.mlsk.analyser.Analyser;
 import pl.mlsk.algorithm.impl.*;
 import pl.mlsk.analyser.AnalysisResult;
+import pl.mlsk.common.AlgorithmInput;
 import pl.mlsk.common.Node;
 import pl.mlsk.common.NodeReader;
 import pl.mlsk.vizualization.Visualizer;
@@ -43,52 +44,52 @@ public class Main {
 
     public void run() {
 
-        List<Node> allNodesA = nodeReader.readNodes(DATA_A);
-        List<Node> allNodesB = nodeReader.readNodes(DATA_B);
+        AlgorithmInput algorithmInputA = nodeReader.readNodes(DATA_A);
+//        AlgorithmInput algorithmInputB = nodeReader.readNodes(DATA_B);
 
         AnalysisResult analysisResultA1 = analyser.analyse(DATA_A, nearestNeighborLastNode);
         showResult(nearestNeighborLastNode.getClass().getSimpleName(), analysisResultA1);
-        IO.println(analysisResultA1.bestSolution().orderedNodes().stream().map(allNodesA::indexOf).toList());
-//        visualizer.visualize(allNodesA, analysisResult.bestSolution().orderedNodes());
+        IO.println(analysisResultA1.bestSolution().orderedNodes().stream().map(algorithmInputA.nodes()::indexOf).toList());
+        visualizer.visualize(algorithmInputA.nodes(), analysisResultA1.bestSolution().orderedNodes());
 
         AnalysisResult analysisResultA2 = analyser.analyse(DATA_A, nearestNeighborAnyNode);
         showResult(nearestNeighborAnyNode.getClass().getSimpleName(), analysisResultA2);
-        IO.println(analysisResultA2.bestSolution().orderedNodes().stream().map(allNodesA::indexOf).toList());
-//        visualizer.visualize(allNodesA, analysisResult2.bestSolution().orderedNodes());
+        IO.println(analysisResultA2.bestSolution().orderedNodes().stream().map(algorithmInputA.nodes()::indexOf).toList());
+        visualizer.visualize(algorithmInputA.nodes(), analysisResultA2.bestSolution().orderedNodes());
 
 
         AnalysisResult analysisResultA3 = analyser.analyse(DATA_A, greedyCycleAlgorithm);
         showResult(greedyCycleAlgorithm.getClass().getSimpleName(), analysisResultA3);
-        IO.println(analysisResultA3.bestSolution().orderedNodes().stream().map(allNodesA::indexOf).toList());
-//        visualizer.visualize(allNodesA, analysisResult3.bestSolution().orderedNodes());
+        IO.println(analysisResultA3.bestSolution().orderedNodes().stream().map(algorithmInputA.nodes()::indexOf).toList());
+        visualizer.visualize(algorithmInputA.nodes(), analysisResultA3.bestSolution().orderedNodes());
 
 
         AnalysisResult analysisResultA4 = analyser.analyse(DATA_A, randomSearchAlgorithm);
         showResult(randomSearchAlgorithm.getClass().getSimpleName(), analysisResultA4);
-        IO.println(analysisResultA4.bestSolution().orderedNodes().stream().map(allNodesA::indexOf).toList());
-//        visualizer.visualize(allNodesA, analysisResult4.bestSolution().orderedNodes());
-
-        AnalysisResult analysisResultB1 = analyser.analyse(DATA_B, nearestNeighborLastNode);
-        showResult(nearestNeighborLastNode.getClass().getSimpleName(), analysisResultB1);
-        IO.println(analysisResultB1.bestSolution().orderedNodes().stream().map(allNodesB::indexOf).toList());
-//        visualizer.visualize(allNodesB, analysisResult.bestSolution().orderedNodes());
-
-        AnalysisResult analysisResultB2 = analyser.analyse(DATA_B, nearestNeighborAnyNode);
-        showResult(nearestNeighborAnyNode.getClass().getSimpleName(), analysisResultB2);
-        IO.println(analysisResultB2.bestSolution().orderedNodes().stream().map(allNodesB::indexOf).toList());
-//        visualizer.visualize(allNodesB, analysisResult2.bestSolution().orderedNodes());
-
-
-        AnalysisResult analysisResultB3 = analyser.analyse(DATA_B, greedyCycleAlgorithm);
-        showResult(greedyCycleAlgorithm.getClass().getSimpleName(), analysisResultB3);
-        IO.println(analysisResultB3.bestSolution().orderedNodes().stream().map(allNodesB::indexOf).toList());
-//        visualizer.visualize(allNodesB, analysisResult3.bestSolution().orderedNodes());
-
-
-        AnalysisResult analysisResultB4 = analyser.analyse(DATA_B, randomSearchAlgorithm);
-        showResult(randomSearchAlgorithm.getClass().getSimpleName(), analysisResultB4);
-        IO.println(analysisResultB4.bestSolution().orderedNodes().stream().map(allNodesB::indexOf).toList());
-//        visualizer.visualize(allNodesB, analysisResult4.bestSolution().orderedNodes());
+        IO.println(analysisResultA4.bestSolution().orderedNodes().stream().map(algorithmInputA.nodes()::indexOf).toList());
+        visualizer.visualize(algorithmInputA.nodes(), analysisResultA4.bestSolution().orderedNodes());
+//
+//        AnalysisResult analysisResultB1 = analyser.analyse(DATA_B, nearestNeighborLastNode);
+//        showResult(nearestNeighborLastNode.getClass().getSimpleName(), analysisResultB1);
+//        IO.println(analysisResultB1.bestSolution().orderedNodes().stream().map(algorithmInputB.nodes()::indexOf).toList());
+//        visualizer.visualize(algorithmInputB.nodes(), analysisResultB1.bestSolution().orderedNodes());
+//
+//        AnalysisResult analysisResultB2 = analyser.analyse(DATA_B, nearestNeighborAnyNode);
+//        showResult(nearestNeighborAnyNode.getClass().getSimpleName(), analysisResultB2);
+//        IO.println(analysisResultB2.bestSolution().orderedNodes().stream().map(algorithmInputB.nodes()::indexOf).toList());
+//        visualizer.visualize(algorithmInputB.nodes(), analysisResultB2.bestSolution().orderedNodes());
+//
+//
+//        AnalysisResult analysisResultB3 = analyser.analyse(DATA_B, greedyCycleAlgorithm);
+//        showResult(greedyCycleAlgorithm.getClass().getSimpleName(), analysisResultB3);
+//        IO.println(analysisResultB3.bestSolution().orderedNodes().stream().map(algorithmInputB.nodes()::indexOf).toList());
+//        visualizer.visualize(algorithmInputB.nodes(), analysisResultB3.bestSolution().orderedNodes());
+//
+//
+//        AnalysisResult analysisResultB4 = analyser.analyse(DATA_B, randomSearchAlgorithm);
+//        showResult(randomSearchAlgorithm.getClass().getSimpleName(), analysisResultB4);
+//        IO.println(analysisResultB4.bestSolution().orderedNodes().stream().map(algorithmInputB.nodes()::indexOf).toList());
+//        visualizer.visualize(algorithmInputB.nodes(), analysisResultB4.bestSolution().orderedNodes());
 
     }
 
