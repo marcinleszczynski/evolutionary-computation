@@ -17,7 +17,7 @@ public abstract class GreedyRegretAlgorithm extends GreedyAlgorithm {
         EvaluationResult bestNode = available
                 .stream()
                 .map(node -> createEvaluationResults(distanceMatrix, node, result))
-                .min(Comparator.comparingDouble(this::calculateRegret).thenComparing(node -> node.getFirst().distance()))
+                .max(Comparator.comparingDouble(this::calculateRegret))
                 .map(List::getFirst)
                 .orElseThrow(RuntimeException::new);
         return new NodeWithIndex(bestNode.node(), bestNode.index());
@@ -35,4 +35,9 @@ public abstract class GreedyRegretAlgorithm extends GreedyAlgorithm {
     protected abstract double calculateRegret(List<EvaluationResult> evaluationResultsForNode);
 
     protected abstract NodeEvaluator getNodeEvaluator();
+
+    @Override
+    public String algorithmName() {
+        return super.algorithmName() + " - " + getNodeEvaluator().getClass().getSimpleName();
+    }
 }

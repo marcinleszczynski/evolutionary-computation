@@ -74,11 +74,11 @@ public class Main {
 
 //        analyser.analyse(DATA_A, greedy2RegretGC);
 //        analyser.analyse(DATA_A, greedy2RegretNN);
-//        analyser.analyse(DATA_A, greedy2RegretWSGC);
-//        analyser.analyse(DATA_A, greedy2RegretWSNN);
+        analyser.analyse(DATA_A, greedy2RegretWSGC);
+        analyser.analyse(DATA_A, greedy2RegretWSNN);
 
-        analyser.analyse(DATA_B, greedy2RegretGC);
-        analyser.analyse(DATA_B, greedy2RegretNN);
+//        analyser.analyse(DATA_B, greedy2RegretGC);
+//        analyser.analyse(DATA_B, greedy2RegretNN);
         analyser.analyse(DATA_B, greedy2RegretWSGC);
         analyser.analyse(DATA_B, greedy2RegretWSNN);
 

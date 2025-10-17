@@ -18,13 +18,11 @@ public class Greedy2RegretWeightedSum extends GreedyRegretAlgorithm {
     protected double calculateRegret(List<EvaluationResult> evaluationResultsForNode) {
 
         if (evaluationResultsForNode.size() <= 1)
-            return 0.0;
+            return -evaluationResultsForNode.get(0).distance();
 
-        return 0.5 * (evaluationResultsForNode.get(1).distance() - evaluationResultsForNode.get(0).distance()) + 0.5 * evaluationResultsForNode.get(0).distance();
-    }
+        double firstBest = evaluationResultsForNode.get(0).distance();
+        double secondBest = evaluationResultsForNode.get(1).distance();
 
-    @Override
-    public String algorithmName() {
-        return super.algorithmName() + " - " + nodeEvaluator.getClass().getSimpleName();
+        return 0.5 * (secondBest - firstBest) - 0.5 * firstBest;
     }
 }
