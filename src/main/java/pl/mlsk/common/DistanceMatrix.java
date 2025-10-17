@@ -14,7 +14,7 @@ public class DistanceMatrix {
         for (int i = 0; i < nodes.size(); i++) {
             indexes.put(nodes.get(i), i);
             for (int j = 0; j < nodes.size(); j++) {
-                matrix[i][j] = nodes.get(i).distanceWithCost(nodes.get(j));
+                matrix[i][j] = Node.distance(nodes.get(i), nodes.get(j));
             }
         }
     }

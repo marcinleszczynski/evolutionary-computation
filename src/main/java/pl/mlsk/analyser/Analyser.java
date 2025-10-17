@@ -2,11 +2,12 @@ package pl.mlsk.analyser;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.mlsk.algorithm.Algorithm;
+import pl.mlsk.algorithm.GreedyAlgorithm;
 import pl.mlsk.common.AlgorithmInput;
 import pl.mlsk.common.Node;
 import pl.mlsk.common.NodeReader;
 import pl.mlsk.common.Solution;
+import pl.mlsk.vizualization.Visualizer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,15 +18,18 @@ import static java.util.Objects.isNull;
 @RequiredArgsConstructor
 public class Analyser {
 
-    private final NodeReader reader;
+    private static final String TEN_EQUALS = "=".repeat(5);
+    private static final String FORTY_EQUALS = "=".repeat(40);
 
-    public AnalysisResult analyse(String pathToData, Algorithm algorithm) {
+    private final NodeReader reader;
+    private final Visualizer visualizer;
+
+    public void analyse(String pathToData, GreedyAlgorithm algorithm) {
         AlgorithmInput algorithmInput = reader.readNodes(pathToData);
         List<Node> nodes = algorithmInput.nodes();
         List<Double> times = new ArrayList<>();
         List<Double> scores = new ArrayList<>();
         Solution bestSolution = null;
-
         for (int i = 0; i < nodes.size(); i++) {
             long start = System.nanoTime();
             Solution solution = algorithm.solve(algorithmInput, i);
@@ -66,11 +70,29 @@ public class Analyser {
 
         double worstTime = times.get(scores.indexOf(worstValue));
 
-        return new AnalysisResult(
+        AnalysisResult analysisResult = new AnalysisResult(
                 bestValue, bestTime,
                 avgValue, avgTime,
                 worstValue, worstTime,
                 bestSolution
         );
+
+        showResult(algorithm.algorithmName(), analysisResult);
+        IO.println(bestSolution.orderedNodes().stream().map(nodes::indexOf).toList());
+        visualizer.visualize(nodes, bestSolution.orderedNodes());
+    }
+
+    private void showResult(String title, AnalysisResult analysisResult) {
+        IO.println("\n\n\n" + FORTY_EQUALS);
+        IO.println(TEN_EQUALS + " ".repeat(timesRepeat(title.length()) / 2) + title + " ".repeat(timesRepeat(title.length()) / 2) + TEN_EQUALS);
+        IO.println(FORTY_EQUALS);
+        IO.println("Best value: " + analysisResult.bestValue() + "\t\t" + "time: " + analysisResult.bestValueTime() + "s");
+        IO.println("Average value: " + analysisResult.averageValue() + "\t\t" + "time: " + analysisResult.averageValueTime() + "s");
+        IO.println("Worst value: " + analysisResult.worstValue() + "\t\t" + "time: " + analysisResult.worstValueTime() + "s");
+        IO.println(FORTY_EQUALS);
+    }
+
+    private int timesRepeat(int length) {
+        return Math.max(1, 30 - length);
     }
 }

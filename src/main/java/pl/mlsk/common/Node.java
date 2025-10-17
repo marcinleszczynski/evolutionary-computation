@@ -8,8 +8,4 @@ public record Node(
     public static double distance(Node a, Node b) {
         return Math.hypot(a.x - b.x, a.y - b.y);
     }
-
-    public double distanceWithCost(Node node) {
-        return distance(this, node) + node.cost;
-    }
 }
