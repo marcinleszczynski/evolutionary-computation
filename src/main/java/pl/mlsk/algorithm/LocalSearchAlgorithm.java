@@ -38,6 +38,6 @@ public abstract class LocalSearchAlgorithm implements Algorithm {
 
     @Override
     public String algorithmName() {
-        return getClass().getSimpleName() + " - " + iteratorFunction.apply(empty, null, null).getClass().getSimpleName() + " - " + greedyAlgorithm.getClass().getSimpleName();
+        return getClass().getSimpleName() + " - " + iteratorFunction.apply(empty, null, List.of()).getClass().getSimpleName() + " - " + greedyAlgorithm.getClass().getSimpleName();
     }
 }
