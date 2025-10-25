@@ -17,6 +17,7 @@ public abstract class LocalSearchAlgorithm implements Algorithm {
 
     private final GreedyAlgorithm greedyAlgorithm;
     protected final TriFunction<Solution, DistanceMatrix, List<Node>, LocalSearchIterator> iteratorFunction;
+    private static final Solution empty = new Solution(List.of(new Node(0, 0, 0))); // used only for getting name of result iterator class
 
     @Override
     public Solution solve(AlgorithmInput input, int startNode) {
@@ -37,6 +38,6 @@ public abstract class LocalSearchAlgorithm implements Algorithm {
 
     @Override
     public String algorithmName() {
-        return getClass().getSimpleName() + " - " + iteratorFunction.apply(null, null, null).getClass().getSimpleName() + " - " + greedyAlgorithm.getClass().getSimpleName();
+        return getClass().getSimpleName() + " - " + iteratorFunction.apply(empty, null, null).getClass().getSimpleName() + " - " + greedyAlgorithm.getClass().getSimpleName();
     }
 }

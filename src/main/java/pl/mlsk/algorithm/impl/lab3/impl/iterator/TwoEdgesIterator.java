@@ -7,8 +7,8 @@ import pl.mlsk.common.Node;
 import pl.mlsk.common.Solution;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class TwoEdgesIterator extends LocalSearchIterator {
 
@@ -30,6 +30,8 @@ public class TwoEdgesIterator extends LocalSearchIterator {
 
     @Override
     public Solution next() {
+        if (!hasNext()) throw new NoSuchElementException();
+
         double delta = getDelta();
         if (delta >= 0) {
             updateIndexes();
@@ -37,14 +39,11 @@ public class TwoEdgesIterator extends LocalSearchIterator {
         }
 
         List<Node> result = new ArrayList<>(solution.orderedNodes());
-        List<Node> nodesToReverse = new ArrayList<>(result.subList(firstNodeIndex+1, secondNodeIndex+1)).reversed();
-        for (int i = firstNodeIndex+1; i < secondNodeIndex+1; i++) {
-            result.set(i, nodesToReverse.get(i - (firstNodeIndex+1)));
+        List<Node> nodesToReverse = new ArrayList<>(result.subList(firstNodeIndex + 1, secondNodeIndex + 1)).reversed();
+        for (int i = firstNodeIndex + 1; i < secondNodeIndex + 1; i++) {
+            result.set(i, nodesToReverse.get(i - (firstNodeIndex + 1)));
         }
         updateIndexes();
-        if (new Solution(result).evaluate() > solution.evaluate() + delta + 1) {
-            throw new RuntimeException();
-        }
         return new Solution(result);
     }
 

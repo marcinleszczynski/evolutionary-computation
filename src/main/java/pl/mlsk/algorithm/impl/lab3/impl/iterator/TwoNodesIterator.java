@@ -8,6 +8,7 @@ import pl.mlsk.common.Solution;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class TwoNodesIterator extends LocalSearchIterator {
 
@@ -30,8 +31,9 @@ public class TwoNodesIterator extends LocalSearchIterator {
 
     @Override
     public Solution next() {
-        double delta = getDelta();
+        if (!hasNext()) throw new NoSuchElementException();
 
+        double delta = getDelta();
         if (delta >= 0) {
             updateIndexes();
             return null;
