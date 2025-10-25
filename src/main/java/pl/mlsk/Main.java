@@ -1,6 +1,5 @@
 package pl.mlsk;
 
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -13,9 +12,9 @@ import pl.mlsk.algorithm.impl.lab1.NearestNeighborLastNode;
 import pl.mlsk.algorithm.impl.lab1.RandomSearchAlgorithm;
 import pl.mlsk.algorithm.impl.lab2.Greedy2RegretAlgorithm;
 import pl.mlsk.algorithm.impl.lab2.Greedy2RegretWeightedSum;
+import pl.mlsk.algorithm.impl.lab3.impl.GreedyLocalSearch;
+import pl.mlsk.algorithm.impl.lab3.impl.SteepestLocalSearch;
 import pl.mlsk.analyser.Analyser;
-import pl.mlsk.common.NodeReader;
-import pl.mlsk.vizualization.Visualizer;
 
 @Service
 @ComponentScan("pl.mlsk")
@@ -48,6 +47,43 @@ public class Main {
     @Setter(onMethod_ = {@Autowired, @Qualifier("greedy2RegretWeightedSumGreedyCycle")})
     private Greedy2RegretWeightedSum greedy2RegretWSGC;
 
+    @Setter(onMethod_ = {@Autowired, @Qualifier("localGreedyNodeBestStart")})
+    private GreedyLocalSearch localGreedyNodeBestStart;
+
+    @Setter(onMethod_ = {@Autowired, @Qualifier("localGreedyEdgeBestStart")})
+    private GreedyLocalSearch localGreedyEdgeBestStart;
+
+    @Setter(onMethod_ = {@Autowired, @Qualifier("localSteepestNodeBestStart")})
+    private SteepestLocalSearch localSteepestNodeBestStart;
+
+    @Setter(onMethod_ = {@Autowired, @Qualifier("localSteepestEdgeBestStart")})
+    private SteepestLocalSearch localSteepestEdgeBestStart;
+
+    @Setter(onMethod_ = {@Autowired, @Qualifier("localGreedyNodeRandomStart")})
+    private GreedyLocalSearch localGreedyNodeRandomStart;
+
+    @Setter(onMethod_ = {@Autowired, @Qualifier("localGreedyEdgeRandomStart")})
+    private GreedyLocalSearch localGreedyEdgeRandomStart;
+
+    @Setter(onMethod_ = {@Autowired, @Qualifier("localSteepestNodeRandomStart")})
+    private SteepestLocalSearch localSteepestNodeRandomStart;
+
+    @Setter(onMethod_ = {@Autowired, @Qualifier("localSteepestEdgeRandomStart")})
+    private SteepestLocalSearch localSteepestEdgeRandomStart;
+
+    @Setter(onMethod_ = {@Autowired, @Qualifier("localGreedyNodeNN")})
+    private GreedyLocalSearch localGreedyNodeNN;
+
+    @Setter(onMethod_ = {@Autowired, @Qualifier("localGreedyEdgeNN")})
+    private GreedyLocalSearch localGreedyEdgeNN;
+
+    @Setter(onMethod_ = {@Autowired, @Qualifier("localSteepestNodeNN")})
+    private SteepestLocalSearch localSteepestNodeNN;
+
+    @Setter(onMethod_ = {@Autowired, @Qualifier("localSteepestEdgeNN")})
+    private SteepestLocalSearch localSteepestEdgeNN;
+
+
     private static final String DATA_A = "/TSPA.csv";
     private static final String DATA_B = "/TSPB.csv";
 
@@ -74,13 +110,34 @@ public class Main {
 
 //        analyser.analyse(DATA_A, greedy2RegretGC);
 //        analyser.analyse(DATA_A, greedy2RegretNN);
-        analyser.analyse(DATA_A, greedy2RegretWSGC);
-        analyser.analyse(DATA_A, greedy2RegretWSNN);
+//        analyser.analyse(DATA_A, greedy2RegretWSGC);
+//        analyser.analyse(DATA_A, greedy2RegretWSNN);
 
 //        analyser.analyse(DATA_B, greedy2RegretGC);
 //        analyser.analyse(DATA_B, greedy2RegretNN);
-        analyser.analyse(DATA_B, greedy2RegretWSGC);
-        analyser.analyse(DATA_B, greedy2RegretWSNN);
+//        analyser.analyse(DATA_B, greedy2RegretWSGC);
+//        analyser.analyse(DATA_B, greedy2RegretWSNN);
+
+//        analyser.analyse(DATA_A, localGreedyNodeBestStart);
+//        analyser.analyse(DATA_A, localGreedyEdgeBestStart);
+//        analyser.analyse(DATA_A, localSteepestNodeBestStart);
+//        analyser.analyse(DATA_A, localSteepestEdgeBestStart);
+
+//        analyser.analyse(DATA_A, localGreedyNodeRandomStart);
+//        analyser.analyse(DATA_A, localGreedyEdgeRandomStart);
+//        analyser.analyse(DATA_A, localSteepestNodeRandomStart);
+//        analyser.analyse(DATA_A, localSteepestEdgeRandomStart);
+
+//        analyser.analyse(DATA_B, localGreedyNodeNN);
+//        analyser.analyse(DATA_B, localGreedyEdgeNN);
+//        analyser.analyse(DATA_B, localSteepestNodeNN);
+//        analyser.analyse(DATA_B, localSteepestEdgeNN);
+//
+//
+        analyser.analyse(DATA_B, localGreedyNodeRandomStart);
+        analyser.analyse(DATA_B, localGreedyEdgeRandomStart);
+        analyser.analyse(DATA_B, localSteepestNodeRandomStart);
+        analyser.analyse(DATA_B, localSteepestEdgeRandomStart);
 
     }
 }

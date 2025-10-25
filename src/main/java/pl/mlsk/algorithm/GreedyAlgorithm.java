@@ -9,8 +9,9 @@ import pl.mlsk.common.Solution;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class GreedyAlgorithm {
+public abstract class GreedyAlgorithm implements Algorithm {
 
+    @Override
     public Solution solve(AlgorithmInput input, int startNode) {
         List<Node> nodes = input.nodes();
         DistanceMatrix distanceMatrix = input.distanceMatrix();
@@ -35,6 +36,7 @@ public abstract class GreedyAlgorithm {
         return Math.round(nodes.size() / 2.0);
     }
 
+    @Override
     public String algorithmName() {
         return this.getClass().getSimpleName();
     }

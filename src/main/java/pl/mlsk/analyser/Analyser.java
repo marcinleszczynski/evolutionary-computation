@@ -2,7 +2,7 @@ package pl.mlsk.analyser;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.mlsk.algorithm.GreedyAlgorithm;
+import pl.mlsk.algorithm.Algorithm;
 import pl.mlsk.common.AlgorithmInput;
 import pl.mlsk.common.Node;
 import pl.mlsk.common.NodeReader;
@@ -24,12 +24,13 @@ public class Analyser {
     private final NodeReader reader;
     private final Visualizer visualizer;
 
-    public void analyse(String pathToData, GreedyAlgorithm algorithm) {
+    public void analyse(String pathToData, Algorithm algorithm) {
         AlgorithmInput algorithmInput = reader.readNodes(pathToData);
         List<Node> nodes = algorithmInput.nodes();
         List<Double> times = new ArrayList<>();
         List<Double> scores = new ArrayList<>();
         Solution bestSolution = null;
+
         for (int i = 0; i < nodes.size(); i++) {
             long start = System.nanoTime();
             Solution solution = algorithm.solve(algorithmInput, i);
@@ -42,6 +43,10 @@ public class Analyser {
             }
         }
 
+        handleResults(algorithm.algorithmName(), scores, times, bestSolution, nodes);
+    }
+
+    private void handleResults(String algorithmName, List<Double> scores, List<Double> times, Solution bestSolution, List<Node> nodes) {
         double bestValue = scores
                 .stream()
                 .mapToDouble(Double::doubleValue)
@@ -77,7 +82,7 @@ public class Analyser {
                 bestSolution
         );
 
-        showResult(algorithm.algorithmName(), analysisResult);
+        showResult(algorithmName, analysisResult);
         IO.println(bestSolution.orderedNodes().stream().map(nodes::indexOf).toList());
         visualizer.visualize(nodes, bestSolution.orderedNodes());
     }
