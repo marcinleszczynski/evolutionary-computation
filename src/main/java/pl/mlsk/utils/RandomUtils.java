@@ -25,6 +25,10 @@ public class RandomUtils implements ApplicationContextAware {
         return getRandom().nextInt(max);
     }
 
+    public static boolean nextBoolean() {
+        return getRandom().nextBoolean();
+    }
+
     @Override
     public synchronized void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
         context = applicationContext;

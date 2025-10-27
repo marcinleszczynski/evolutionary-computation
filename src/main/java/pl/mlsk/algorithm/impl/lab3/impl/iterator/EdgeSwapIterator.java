@@ -10,14 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-public class TwoEdgesIterator extends LocalSearchIterator {
+public class EdgeSwapIterator extends LocalSearchIterator {
 
     private int firstNodeIndex;
     private int secondNodeIndex;
     @Getter
     private double bestDelta = Double.MAX_VALUE;
 
-    public TwoEdgesIterator(Solution solution, DistanceMatrix distanceMatrix, List<Node> nodesOutOfSolution) {
+    public EdgeSwapIterator(Solution solution, DistanceMatrix distanceMatrix, List<Node> nodesOutOfSolution) {
         super(solution, distanceMatrix, nodesOutOfSolution);
         firstNodeIndex = 0;
         secondNodeIndex = 2;
@@ -33,10 +33,11 @@ public class TwoEdgesIterator extends LocalSearchIterator {
         if (!hasNext()) throw new NoSuchElementException();
 
         double delta = getDelta();
-        if (delta >= 0) {
+        if (delta >= 0 || delta >= bestDelta) {
             updateIndexes();
             return null;
         }
+        bestDelta = delta;
 
         List<Node> result = new ArrayList<>(solution.orderedNodes());
         List<Node> nodesToReverse = new ArrayList<>(result.subList(firstNodeIndex + 1, secondNodeIndex + 1)).reversed();
@@ -63,7 +64,7 @@ public class TwoEdgesIterator extends LocalSearchIterator {
         int nodeAfterFirstIndex = (firstNodeIndex + 1) % solution.orderedNodes().size();
         int nodeAfterSecondIndex = (secondNodeIndex + 1) % solution.orderedNodes().size();
 
-        double delta = distanceMatrix.getDistance(
+        return distanceMatrix.getDistance(
                 solution.orderedNodes().get(firstNodeIndex),
                 solution.orderedNodes().get(secondNodeIndex)
         ) + distanceMatrix.getDistance(
@@ -76,10 +77,5 @@ public class TwoEdgesIterator extends LocalSearchIterator {
                 solution.orderedNodes().get(secondNodeIndex),
                 solution.orderedNodes().get(nodeAfterSecondIndex)
         );
-
-        if (delta < bestDelta) {
-            bestDelta = delta;
-        }
-        return delta;
     }
 }

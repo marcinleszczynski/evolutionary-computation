@@ -2,12 +2,12 @@ package pl.mlsk.algorithm;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.function.TriFunction;
-import pl.mlsk.algorithm.impl.lab3.LocalSearchIterator;
 import pl.mlsk.common.AlgorithmInput;
 import pl.mlsk.common.DistanceMatrix;
 import pl.mlsk.common.Node;
 import pl.mlsk.common.Solution;
 
+import java.util.Iterator;
 import java.util.List;
 
 import static java.util.Objects.isNull;
@@ -16,7 +16,7 @@ import static java.util.Objects.isNull;
 public abstract class LocalSearchAlgorithm implements Algorithm {
 
     private final GreedyAlgorithm greedyAlgorithm;
-    protected final TriFunction<Solution, DistanceMatrix, List<Node>, LocalSearchIterator> iteratorFunction;
+    protected final TriFunction<Solution, DistanceMatrix, List<Node>, Iterator<Solution>> iteratorFunction;
     private static final Solution empty = new Solution(List.of(new Node(0, 0, 0))); // used only for getting name of result iterator class
 
     @Override

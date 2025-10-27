@@ -10,18 +10,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-public class TwoNodesIterator extends LocalSearchIterator {
+public class InterRouteIterator extends LocalSearchIterator {
 
-    private int solutionNodeIndex;
-    private int notSolutionNodeIndex;
+    private int solutionNodeIndex = 0;
+    private int notSolutionNodeIndex = 0;
 
     @Getter
     private double bestDelta = Double.MAX_VALUE;
 
-    public TwoNodesIterator(Solution solution, DistanceMatrix distanceMatrix, List<Node> nodesOutOfSolution) {
+    public InterRouteIterator(Solution solution, DistanceMatrix distanceMatrix, List<Node> nodesOutOfSolution) {
         super(solution, distanceMatrix, nodesOutOfSolution);
-        solutionNodeIndex = 0;
-        notSolutionNodeIndex = 0;
     }
 
     @Override
@@ -34,10 +32,11 @@ public class TwoNodesIterator extends LocalSearchIterator {
         if (!hasNext()) throw new NoSuchElementException();
 
         double delta = getDelta();
-        if (delta >= 0) {
+        if (delta >= 0 || delta >= bestDelta) {
             updateIndexes();
             return null;
         }
+        bestDelta = delta;
 
         List<Node> nodes = new ArrayList<>(solution.orderedNodes());
         nodes.set(solutionNodeIndex, nodesOutOfSolution.get(notSolutionNodeIndex));
@@ -50,7 +49,7 @@ public class TwoNodesIterator extends LocalSearchIterator {
         int nodeBeforeSolutionNode = (solutionNodeIndex - 1 + solution.orderedNodes().size()) % solution.orderedNodes().size();
         int nodeAfterSolutionNode = (solutionNodeIndex + 1) % solution.orderedNodes().size();
 
-        double delta = distanceMatrix.getDistance(
+        return distanceMatrix.getDistance(
                 solution.orderedNodes().get(nodeBeforeSolutionNode),
                 nodesOutOfSolution.get(notSolutionNodeIndex)
         ) + distanceMatrix.getDistance(
@@ -63,11 +62,6 @@ public class TwoNodesIterator extends LocalSearchIterator {
                 solution.orderedNodes().get(nodeAfterSolutionNode),
                 solution.orderedNodes().get(solutionNodeIndex)
         ) - solution.orderedNodes().get(solutionNodeIndex).cost() + nodesOutOfSolution.get(notSolutionNodeIndex).cost();
-
-        if (delta < bestDelta) {
-            bestDelta = delta;
-        }
-        return delta;
     }
 
     private void updateIndexes() {

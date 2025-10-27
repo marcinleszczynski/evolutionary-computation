@@ -118,26 +118,25 @@ public class Main {
 //        analyser.analyse(DATA_B, greedy2RegretWSGC);
 //        analyser.analyse(DATA_B, greedy2RegretWSNN);
 
-//        analyser.analyse(DATA_A, localGreedyNodeBestStart);
-//        analyser.analyse(DATA_A, localGreedyEdgeBestStart);
-//        analyser.analyse(DATA_A, localSteepestNodeBestStart);
-//        analyser.analyse(DATA_A, localSteepestEdgeBestStart);
+        analyser.analyse(DATA_A, localGreedyNodeBestStart);
+        analyser.analyse(DATA_A, localGreedyEdgeBestStart);
+        analyser.analyse(DATA_A, localSteepestNodeBestStart);
+        analyser.analyse(DATA_A, localSteepestEdgeBestStart);
 
-//        analyser.analyse(DATA_A, localGreedyNodeRandomStart);
-//        analyser.analyse(DATA_A, localGreedyEdgeRandomStart);
-//        analyser.analyse(DATA_A, localSteepestNodeRandomStart);
-//        analyser.analyse(DATA_A, localSteepestEdgeRandomStart);
+        analyser.analyse(DATA_A, localGreedyNodeRandomStart);
+        analyser.analyse(DATA_A, localGreedyEdgeRandomStart);
+        analyser.analyse(DATA_A, localSteepestNodeRandomStart);
+        analyser.analyse(DATA_A, localSteepestEdgeRandomStart);
 
         analyser.analyse(DATA_B, localGreedyNodeNN);
         analyser.analyse(DATA_B, localGreedyEdgeNN);
         analyser.analyse(DATA_B, localSteepestNodeNN);
         analyser.analyse(DATA_B, localSteepestEdgeNN);
-//
-//
-//        analyser.analyse(DATA_B, localGreedyNodeRandomStart);
-//        analyser.analyse(DATA_B, localGreedyEdgeRandomStart);
-//        analyser.analyse(DATA_B, localSteepestNodeRandomStart);
-//        analyser.analyse(DATA_B, localSteepestEdgeRandomStart);
+        
+        analyser.analyse(DATA_B, localGreedyNodeRandomStart);
+        analyser.analyse(DATA_B, localGreedyEdgeRandomStart);
+        analyser.analyse(DATA_B, localSteepestNodeRandomStart);
+        analyser.analyse(DATA_B, localSteepestEdgeRandomStart);
 
     }
 }
