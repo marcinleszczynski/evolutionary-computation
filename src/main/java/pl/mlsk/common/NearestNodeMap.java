@@ -1,6 +1,9 @@
 package pl.mlsk.common;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.ToDoubleFunction;
 
 public class NearestNodeMap {
@@ -27,19 +30,13 @@ public class NearestNodeMap {
     }
 
     private List<Node> getNClosestNeighbors(Node node, List<Node> nodes, int n) {
-        PriorityQueue<PriorityNode> pq = new PriorityQueue<>(Comparator.comparingDouble(PriorityNode::priority));
         ToDoubleFunction<Node> distanceFn = nd -> Node.distance(node, nd) + nd.cost();
-        for (Node neighbor : nodes) {
-            if (neighbor != node) {
-                if (pq.size() < n) {
-                    pq.add(new PriorityNode(neighbor, distanceFn.applyAsDouble(neighbor)));
-                } else if (distanceFn.applyAsDouble(neighbor) < pq.peek().priority()) {
-                    pq.poll();
-                    pq.add(new PriorityNode(neighbor, distanceFn.applyAsDouble(neighbor)));
-                }
-            }
-        }
-        return pq.stream().map(PriorityNode::node).toList();
+        return nodes
+                .stream()
+                .filter(nod -> nod != node)
+                .sorted(Comparator.comparingDouble(distanceFn))
+                .limit(n)
+                .toList();
     }
 
     private record PriorityNode(

@@ -12,15 +12,16 @@ import java.util.List;
 public class NodeReader {
 
     private static final String SEMICOLON = ";";
+    private static final int CANDIDATE_NODES_LAB4 = 10;
 
     public AlgorithmInput readNodes(String path) {
-        InputStream in = NodeReader.class.getResourceAsStream(path);
+        InputStream in = getClass().getResourceAsStream(path);
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         List<Node> nodes = reader.lines()
                 .map(this::parseNode)
                 .toList();
 
-        return new AlgorithmInput(nodes, new DistanceMatrix(nodes), new NearestNodeMap(nodes, 1));
+        return new AlgorithmInput(nodes, new DistanceMatrix(nodes), new NearestNodeMap(nodes, CANDIDATE_NODES_LAB4));
     }
 
     private Node parseNode(String line) {

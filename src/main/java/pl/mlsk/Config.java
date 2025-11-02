@@ -15,16 +15,9 @@ import pl.mlsk.algorithm.impl.lab3.impl.SteepestLocalSearch;
 import pl.mlsk.algorithm.impl.lab3.impl.iterator.grouped.LocalEdgeIterator;
 import pl.mlsk.algorithm.impl.lab3.impl.iterator.grouped.LocalNodeIterator;
 
-import java.util.Random;
-
 @Configuration
 @RequiredArgsConstructor
 public class Config {
-
-    @Bean
-    public Random random() {
-        return new Random(42);
-    }
 
     @Bean(name = "greedy2RegretNearestNeighbor")
     public Greedy2RegretAlgorithm greedy2RegretNearestNeighbor(NearestNeighborNodeEvaluator evaluator) {

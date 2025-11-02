@@ -9,10 +9,9 @@ import pl.mlsk.common.NodeReader;
 import pl.mlsk.common.Solution;
 import pl.mlsk.vizualization.Visualizer;
 
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-
-import static java.util.Objects.isNull;
+import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
@@ -27,23 +26,48 @@ public class Analyser {
     public void analyse(String pathToData, Algorithm algorithm) {
         AlgorithmInput algorithmInput = reader.readNodes(pathToData);
         List<Node> nodes = algorithmInput.nodes();
-        List<Double> times = new ArrayList<>();
-        List<Double> scores = new ArrayList<>();
-        Solution bestSolution = null;
+//        List<Double> times = new ArrayList<>();
+//        List<Double> scores = new ArrayList<>();
+//        Solution bestSolution = null;
 
-        for (int i = 0; i < nodes.size(); i++) {
-            long start = System.nanoTime();
-            Solution solution = algorithm.solve(algorithmInput, i);
-            double time = (System.nanoTime() - start) / 1_000_000_000.0;
-            times.add(time);
-            scores.add(solution.evaluate());
+//        for (int i = 0; i < nodes.size(); i++) {
+//            long start = System.nanoTime();
+//            Solution solution = algorithm.solve(algorithmInput, i);
+//            double time = (System.nanoTime() - start) / 1_000_000_000.0;
+//            times.add(time);
+//            scores.add(solution.evaluate());
+//
+//            if (isNull(bestSolution) || solution.evaluate() < bestSolution.evaluate()) {
+//                bestSolution = solution;
+//            }
+//        }
+//        handleResults(algorithm.algorithmName(), scores, times, bestSolution, nodes);
 
-            if (isNull(bestSolution) || solution.evaluate() < bestSolution.evaluate()) {
-                bestSolution = solution;
-            }
-        }
 
-        handleResults(algorithm.algorithmName(), scores, times, bestSolution, nodes);
+        List<PartialResult> results = IntStream.range(0, nodes.size())
+                .parallel()
+                .mapToObj(i -> {
+                    long start = System.nanoTime();
+                    Solution solution = algorithm.solve(algorithmInput, i);
+                    double time = (System.nanoTime() - start) / 1_000_000_000.0;
+                    double score = solution.evaluate();
+                    return new PartialResult(time, solution, score);
+                })
+                .toList();
+
+        Solution bestSolution = results
+                .stream()
+                .min(Comparator.comparingDouble(PartialResult::score))
+                .map(PartialResult::solution)
+                .orElseThrow(RuntimeException::new);
+
+        handleResults(
+                algorithm.algorithmName(),
+                results.stream().map(PartialResult::score).toList(),
+                results.stream().map(PartialResult::time).toList(),
+                bestSolution,
+                nodes
+        );
     }
 
     private void handleResults(String algorithmName, List<Double> scores, List<Double> times, Solution bestSolution, List<Node> nodes) {
@@ -99,5 +123,12 @@ public class Analyser {
 
     private int timesRepeat(int length) {
         return Math.max(1, 30 - length);
+    }
+
+    private record PartialResult(
+            double time,
+            Solution solution,
+            double score
+    ) {
     }
 }

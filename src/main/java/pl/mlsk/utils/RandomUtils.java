@@ -1,20 +1,16 @@
 package pl.mlsk.utils;
 
-import lombok.NonNull;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Component;
+import lombok.experimental.UtilityClass;
 
 import java.util.Random;
 
-@Component
-public class RandomUtils implements ApplicationContextAware {
+@UtilityClass
+public class RandomUtils {
 
-    private static ApplicationContext context;
+    private static final ThreadLocal<Random> RANDOM = ThreadLocal.withInitial(() -> new Random(42));
 
     private static Random getRandom() {
-        return context.getBean(Random.class);
+        return RANDOM.get();
     }
 
     public static int nextInt(int min, int max) {
@@ -27,10 +23,5 @@ public class RandomUtils implements ApplicationContextAware {
 
     public static boolean nextBoolean() {
         return getRandom().nextBoolean();
-    }
-
-    @Override
-    public synchronized void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
-        context = applicationContext;
     }
 }

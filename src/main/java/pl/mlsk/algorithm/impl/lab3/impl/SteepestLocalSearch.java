@@ -29,8 +29,7 @@ public class SteepestLocalSearch extends LocalSearchAlgorithm {
             if (nonNull(nextSolution))
                 result = nextSolution;
         }
-        return result == solution ?
-                null : result;
+        return result == solution ? null : result;
     }
 
     private List<Node> nodesNotInSolution(Solution solution, List<Node> allNodes) {

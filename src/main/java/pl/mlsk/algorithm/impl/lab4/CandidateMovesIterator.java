@@ -9,6 +9,7 @@ import pl.mlsk.common.Solution;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
 public class CandidateMovesIterator implements Iterator<Solution> {
@@ -22,15 +23,9 @@ public class CandidateMovesIterator implements Iterator<Solution> {
 
     double bestDelta = 0.0;
 
-    private Node beforeBeforeCurrentNode = null;
-    private Node beforeCurrentNode = null;
     private Node currentNode = null;
-    private Node afterCurrentNode = null;
-    private Node afterAfterCurrentNode = null;
-
-    private Node beforeCandidateNode = null;
+    private Node nodeNextToCurrentNode = null;
     private Node candidateNode = null;
-    private Node afterCandidateNode = null;
 
     @Override
     public boolean hasNext() {
@@ -39,40 +34,45 @@ public class CandidateMovesIterator implements Iterator<Solution> {
 
     @Override
     public Solution next() {
-        DeltaResult delta = getDelta();
+        if (!hasNext()) throw new NoSuchElementException();
 
-        if (delta.delta == null || delta.delta() >= bestDelta) {
+        DeltaResult delta = getDelta();
+        if (delta.delta() >= bestDelta) {
             updateIndexes();
             return null;
         }
         bestDelta = delta.delta();
+
         List<Node> solutionNodes = new ArrayList<>(solution.orderedNodes());
         if (delta.isEdgeSwap()) {
-            int candidateIndex = solution.orderedNodes().indexOf(candidateNode);
-            int a = Math.min(nodeIndex, candidateIndex);
-            int b = Math.max(nodeIndex, candidateIndex);
-            if (variantIndex == 0) {
-                List<Node> sublist = new ArrayList<>(solution.orderedNodes().subList(a, b).reversed());
-                for (int i = a; i <= b - 1; i++) {
-                    solutionNodes.set(i, sublist.get(i - a));
-                }
-            } else {
-                List<Node> sublist = new ArrayList<>(solution.orderedNodes().subList(a + 1, b + 1).reversed());
-                for (int i = a + 1; i <= b; i++) {
-                    solutionNodes.set(i, sublist.get(i - a - 1));
-                }
-            }
+            handleEdgeSwap(solutionNodes);
         } else {
-            if (variantIndex == 0) {
-                int nodeBeforeCurrentIndex = solution.orderedNodes().indexOf(beforeCurrentNode);
-                solutionNodes.set(nodeBeforeCurrentIndex, candidateNode);
-            } else {
-                int nodeAfterCurrentIndex = solution.orderedNodes().indexOf(afterCurrentNode);
-                solutionNodes.set(nodeAfterCurrentIndex, candidateNode);
-            }
+            handleNodeExchange(solutionNodes);
+        }
+        if (Math.abs(new Solution(solutionNodes).evaluate() - (solution.evaluate() + bestDelta)) >= 0.01) {
+            throw new RuntimeException();
         }
         updateIndexes();
         return new Solution(solutionNodes);
+    }
+
+    private void handleEdgeSwap(List<Node> solutionNodes) {
+        int candidateIndex = solution.orderedNodes().indexOf(candidateNode);
+        int a = Math.min(nodeIndex, candidateIndex);
+        int b = Math.max(nodeIndex, candidateIndex);
+        if (variantIndex == 1) {
+            a++;
+            b++;
+        }
+        List<Node> sublist = new ArrayList<>(solution.orderedNodes().subList(a, b).reversed());
+        for (int i = a; i < b; i++) {
+            solutionNodes.set(i, sublist.get(i - a));
+        }
+    }
+
+    private void handleNodeExchange(List<Node> solutionNodes) {
+        int index = solution.orderedNodes().indexOf(nodeNextToCurrentNode);
+        solutionNodes.set(index, candidateNode);
     }
 
     private DeltaResult getDelta() {
@@ -85,7 +85,7 @@ public class CandidateMovesIterator implements Iterator<Solution> {
             int a = Math.min(nodeIndex, candidateIndex);
             int b = Math.max(nodeIndex, candidateIndex);
             if (b - a <= 1 || (solution.orderedNodes().size() - b + a) <= 1) {
-                return DeltaResult.edge(null); // adjacent candidates - illegal swap
+                return DeltaResult.edge(0.0); // adjacent candidates - illegal swap
             } else {
                 return deltaFromEdgeSwap(candidateIndex);
             }
@@ -95,75 +95,47 @@ public class CandidateMovesIterator implements Iterator<Solution> {
     }
 
     private DeltaResult deltaFromEdgeSwap(int candidateIndex) {
-        if (variantIndex == 0) {
-            int nodeBeforeCurrentIndex = (nodeIndex - 1 + solution.orderedNodes().size()) % solution.orderedNodes().size();
-            int nodeBeforeCandidateIndex = (candidateIndex - 1 + solution.orderedNodes().size()) % solution.orderedNodes().size();
+        boolean isVariant0 = variantIndex == 0;
+        int nodeNextToCurrent = isVariant0 ?
+                (nodeIndex - 1 + solution.orderedNodes().size()) % solution.orderedNodes().size() :
+                (nodeIndex + 1) % solution.orderedNodes().size();
+        int nodeNextToCandidate = isVariant0 ?
+                (candidateIndex - 1 + solution.orderedNodes().size()) % solution.orderedNodes().size() :
+                (candidateIndex + 1) % solution.orderedNodes().size();
+        nodeNextToCurrentNode = solution.orderedNodes().get(nodeNextToCurrent);
+        Node nextToCandidateNode = solution.orderedNodes().get(nodeNextToCandidate);
 
-            beforeCurrentNode = solution.orderedNodes().get(nodeBeforeCurrentIndex);
-            beforeCandidateNode = solution.orderedNodes().get(nodeBeforeCandidateIndex);
-
-            return DeltaResult.edge(distanceMatrix.getDistance(
-                    currentNode, candidateNode
-            ) + distanceMatrix.getDistance(
-                    beforeCurrentNode, beforeCandidateNode
-            ) - distanceMatrix.getDistance(
-                    currentNode, beforeCurrentNode
-            ) - distanceMatrix.getDistance(
-                    candidateNode, beforeCandidateNode
-            ));
-        } else {
-            int nodeAfterCurrentIndex = (nodeIndex + 1) % solution.orderedNodes().size();
-            int nodeAfterCandidateIndex = (candidateIndex + 1) % solution.orderedNodes().size();
-
-            afterCurrentNode = solution.orderedNodes().get(nodeAfterCurrentIndex);
-            afterCandidateNode = solution.orderedNodes().get(nodeAfterCandidateIndex);
-
-            return DeltaResult.edge(distanceMatrix.getDistance(
-                    currentNode, candidateNode
-            ) + distanceMatrix.getDistance(
-                    afterCurrentNode, afterCandidateNode
-            ) - distanceMatrix.getDistance(
-                    currentNode, afterCurrentNode
-            ) - distanceMatrix.getDistance(
-                    candidateNode, afterCandidateNode
-            ));
-        }
+        return DeltaResult.edge(distanceMatrix.getDistance(
+                currentNode, candidateNode
+        ) + distanceMatrix.getDistance(
+                nodeNextToCurrentNode, nextToCandidateNode
+        ) - distanceMatrix.getDistance(
+                currentNode, nodeNextToCurrentNode
+        ) - distanceMatrix.getDistance(
+                candidateNode, nextToCandidateNode
+        ));
     }
 
     private DeltaResult deltaFromInterMove() {
-        if (variantIndex == 0) {
-            int nodeBeforeCurrentIndex = (nodeIndex - 1 + solution.orderedNodes().size()) % solution.orderedNodes().size();
-            int nodeBeforeBeforeCurrentIndex = (nodeBeforeCurrentIndex - 1 + solution.orderedNodes().size()) % solution.orderedNodes().size();
+        boolean isVariant0 = variantIndex == 0;
+        int nodeNextToCurrent = isVariant0 ?
+                (nodeIndex - 1 + solution.orderedNodes().size()) % solution.orderedNodes().size() :
+                (nodeIndex + 1) % solution.orderedNodes().size();
+        int nodeNextNextToCurrent = isVariant0 ?
+                (nodeNextToCurrent - 1 + solution.orderedNodes().size()) % solution.orderedNodes().size() :
+                (nodeNextToCurrent + 1) % solution.orderedNodes().size();
+        nodeNextToCurrentNode = solution.orderedNodes().get(nodeNextToCurrent);
+        Node nodeNextNextToCurrentNode = solution.orderedNodes().get(nodeNextNextToCurrent);
 
-            beforeCurrentNode = solution.orderedNodes().get(nodeBeforeCurrentIndex);
-            beforeBeforeCurrentNode = solution.orderedNodes().get(nodeBeforeBeforeCurrentIndex);
-
-            return DeltaResult.interMove(distanceMatrix.getDistance(
-                    currentNode, candidateNode
-            ) + distanceMatrix.getDistance(
-                    beforeBeforeCurrentNode, candidateNode
-            ) - distanceMatrix.getDistance(
-                    currentNode, beforeCurrentNode
-            ) - distanceMatrix.getDistance(
-                    beforeCurrentNode, beforeBeforeCurrentNode
-            ) - beforeCurrentNode.cost() + candidateNode.cost());
-        } else {
-            int nodeAfterCurrentIndex = (nodeIndex + 1) % solution.orderedNodes().size();
-            int nodeAfterAfterCurrentIndex = (nodeAfterCurrentIndex + 1) % solution.orderedNodes().size();
-
-            afterCurrentNode = solution.orderedNodes().get(nodeAfterCurrentIndex);
-            afterAfterCurrentNode = solution.orderedNodes().get(nodeAfterAfterCurrentIndex);
-
-            return DeltaResult.interMove(distanceMatrix.getDistance(
-                    currentNode, candidateNode
-            ) + distanceMatrix.getDistance(
-                    afterAfterCurrentNode, candidateNode
-            ) - distanceMatrix.getDistance(
-                    currentNode, afterCurrentNode
-            ) - distanceMatrix.getDistance(
-                    afterCurrentNode, afterAfterCurrentNode
-            ) - afterCurrentNode.cost() + candidateNode.cost());
-        }
+        return DeltaResult.interMove(distanceMatrix.getDistance(
+                currentNode, candidateNode
+        ) + distanceMatrix.getDistance(
+                nodeNextNextToCurrentNode, candidateNode
+        ) - distanceMatrix.getDistance(
+                currentNode, nodeNextToCurrentNode
+        ) - distanceMatrix.getDistance(
+                nodeNextToCurrentNode, nodeNextNextToCurrentNode
+        ) - nodeNextToCurrentNode.cost() + candidateNode.cost());
     }
 
     private void updateIndexes() {

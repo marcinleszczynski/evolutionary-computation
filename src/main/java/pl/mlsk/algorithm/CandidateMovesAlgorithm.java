@@ -11,6 +11,9 @@ import pl.mlsk.common.Solution;
 
 import java.util.Iterator;
 
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+
 @Service
 @RequiredArgsConstructor
 public class CandidateMovesAlgorithm implements Algorithm {
@@ -26,25 +29,24 @@ public class CandidateMovesAlgorithm implements Algorithm {
     private Solution candidateMovesSearch(Solution initialSolution, DistanceMatrix distanceMatrix, NearestNodeMap nearestNodeMap) {
         Solution bestSolution = initialSolution;
         while (true) {
-            Solution nextSolution = nextStep(bestSolution, distanceMatrix, nearestNodeMap);
-            if (nextSolution != null) {
-                bestSolution = nextSolution;
-            } else {
+            Solution nextSolution = nextBestSolution(bestSolution, distanceMatrix, nearestNodeMap);
+            if (isNull(nextSolution)) {
                 return bestSolution;
             }
+            bestSolution = nextSolution;
         }
     }
 
-    private Solution nextStep(Solution solution, DistanceMatrix distanceMatrix, NearestNodeMap nearestNodeMap) {
-        Iterator<Solution> canditateMovesIterator = new CandidateMovesIterator(solution, distanceMatrix, nearestNodeMap);
-        Solution bestSolution = solution;
-        while (canditateMovesIterator.hasNext()) {
-            Solution nextSolution = canditateMovesIterator.next();
-            if (nextSolution != null) {
-                bestSolution = nextSolution;
+    private Solution nextBestSolution(Solution solution, DistanceMatrix distanceMatrix, NearestNodeMap nearestNodeMap) {
+        Iterator<Solution> iterator = new CandidateMovesIterator(solution, distanceMatrix, nearestNodeMap);
+        Solution result = solution;
+        while (iterator.hasNext()) {
+            Solution nextSolution = iterator.next();
+            if (nonNull(nextSolution)) {
+                result = nextSolution;
             }
         }
-        return solution == bestSolution ? null : bestSolution;
+        return result == solution ? null : result;
     }
 
     @Override

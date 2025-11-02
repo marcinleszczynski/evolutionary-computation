@@ -8,6 +8,7 @@ import pl.mlsk.utils.RandomUtils;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+
 @RequiredArgsConstructor
 public abstract class LocalSearchGroupIterator implements Iterator<Solution> {
 
