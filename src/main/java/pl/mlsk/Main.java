@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
+import pl.mlsk.algorithm.CandidateMovesAlgorithm;
 import pl.mlsk.algorithm.impl.lab1.GreedyCycleAlgorithm;
 import pl.mlsk.algorithm.impl.lab1.NearestNeighborAnyNode;
 import pl.mlsk.algorithm.impl.lab1.NearestNeighborLastNode;
@@ -83,6 +84,9 @@ public class Main {
     @Setter(onMethod_ = {@Autowired, @Qualifier("localSteepestEdgeNN")})
     private SteepestLocalSearch localSteepestEdgeNN;
 
+    @Setter(onMethod_ = @Autowired)
+    private CandidateMovesAlgorithm candidateMovesAlgorithm;
+
 
     private static final String DATA_A = "/TSPA.csv";
     private static final String DATA_B = "/TSPB.csv";
@@ -118,25 +122,28 @@ public class Main {
 //        analyser.analyse(DATA_B, greedy2RegretWSGC);
 //        analyser.analyse(DATA_B, greedy2RegretWSNN);
 
-        analyser.analyse(DATA_A, localGreedyNodeBestStart);
-        analyser.analyse(DATA_A, localGreedyEdgeBestStart);
-        analyser.analyse(DATA_A, localSteepestNodeBestStart);
-        analyser.analyse(DATA_A, localSteepestEdgeBestStart);
+//        analyser.analyse(DATA_A, localGreedyNodeBestStart);
+//        analyser.analyse(DATA_A, localGreedyEdgeBestStart);
+//        analyser.analyse(DATA_A, localSteepestNodeBestStart);
+//        analyser.analyse(DATA_A, localSteepestEdgeBestStart);
+//
+//        analyser.analyse(DATA_A, localGreedyNodeRandomStart);
+//        analyser.analyse(DATA_A, localGreedyEdgeRandomStart);
+//        analyser.analyse(DATA_A, localSteepestNodeRandomStart);
+//        analyser.analyse(DATA_A, localSteepestEdgeRandomStart);
+//
+//        analyser.analyse(DATA_B, localGreedyNodeNN);
+//        analyser.analyse(DATA_B, localGreedyEdgeNN);
+//        analyser.analyse(DATA_B, localSteepestNodeNN);
+//        analyser.analyse(DATA_B, localSteepestEdgeNN);
+//
+//        analyser.analyse(DATA_B, localGreedyNodeRandomStart);
+//        analyser.analyse(DATA_B, localGreedyEdgeRandomStart);
+//        analyser.analyse(DATA_B, localSteepestNodeRandomStart);
+//        analyser.analyse(DATA_B, localSteepestEdgeRandomStart);
 
-        analyser.analyse(DATA_A, localGreedyNodeRandomStart);
-        analyser.analyse(DATA_A, localGreedyEdgeRandomStart);
-        analyser.analyse(DATA_A, localSteepestNodeRandomStart);
-        analyser.analyse(DATA_A, localSteepestEdgeRandomStart);
-
-        analyser.analyse(DATA_B, localGreedyNodeNN);
-        analyser.analyse(DATA_B, localGreedyEdgeNN);
-        analyser.analyse(DATA_B, localSteepestNodeNN);
-        analyser.analyse(DATA_B, localSteepestEdgeNN);
-        
-        analyser.analyse(DATA_B, localGreedyNodeRandomStart);
-        analyser.analyse(DATA_B, localGreedyEdgeRandomStart);
-        analyser.analyse(DATA_B, localSteepestNodeRandomStart);
-        analyser.analyse(DATA_B, localSteepestEdgeRandomStart);
+//        analyser.analyse(DATA_A, candidateMovesAlgorithm);
+        analyser.analyse(DATA_B, candidateMovesAlgorithm);
 
     }
 }

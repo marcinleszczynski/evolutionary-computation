@@ -20,18 +20,18 @@ public class NodeReader {
                 .map(this::parseNode)
                 .toList();
 
-        return new AlgorithmInput(nodes, new DistanceMatrix(nodes));
+        return new AlgorithmInput(nodes, new DistanceMatrix(nodes), new NearestNodeMap(nodes, 1));
     }
 
     private Node parseNode(String line) {
         List<Integer> numbers = Arrays
-            .stream(line.split(SEMICOLON))
-            .map(Integer::parseInt)
-            .toList();
+                .stream(line.split(SEMICOLON))
+                .map(Integer::parseInt)
+                .toList();
         return new Node(
-            numbers.get(0),
-            numbers.get(1),
-            numbers.get(2)
+                numbers.get(0),
+                numbers.get(1),
+                numbers.get(2)
         );
     }
 }
