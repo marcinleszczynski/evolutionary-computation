@@ -26,8 +26,6 @@ public abstract class LocalSearchIterator implements Iterator<Solution> {
 
     protected abstract double getDelta();
 
-    public abstract double getBestDelta();
-
     private void randomizeSolution(List<Node> solutionNodes) {
         int randomIndex = RandomUtils.nextInt(solutionNodes.size());
         if (randomIndex == 0) return;

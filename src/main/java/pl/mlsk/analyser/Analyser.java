@@ -26,22 +26,6 @@ public class Analyser {
     public void analyse(String pathToData, Algorithm algorithm) {
         AlgorithmInput algorithmInput = reader.readNodes(pathToData);
         List<Node> nodes = algorithmInput.nodes();
-//        List<Double> times = new ArrayList<>();
-//        List<Double> scores = new ArrayList<>();
-//        Solution bestSolution = null;
-
-//        for (int i = 0; i < nodes.size(); i++) {
-//            long start = System.nanoTime();
-//            Solution solution = algorithm.solve(algorithmInput, i);
-//            double time = (System.nanoTime() - start) / 1_000_000_000.0;
-//            times.add(time);
-//            scores.add(solution.evaluate());
-//
-//            if (isNull(bestSolution) || solution.evaluate() < bestSolution.evaluate()) {
-//                bestSolution = solution;
-//            }
-//        }
-//        handleResults(algorithm.algorithmName(), scores, times, bestSolution, nodes);
 
 
         List<PartialResult> results = IntStream.range(0, nodes.size())
