@@ -29,7 +29,7 @@ public class Analyser {
 
 
         List<PartialResult> results = IntStream.range(0, nodes.size())
-                .parallel()
+//                .parallel()
                 .mapToObj(i -> {
                     long start = System.nanoTime();
                     Solution solution = algorithm.solve(algorithmInput, i);

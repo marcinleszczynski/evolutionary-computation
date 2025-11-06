@@ -151,17 +151,4 @@ public class CandidateMovesIterator implements Iterator<Solution> {
             }
         }
     }
-
-    private record DeltaResult(
-            Double delta,
-            boolean isEdgeSwap
-    ) {
-        public static DeltaResult edge(Double delta) {
-            return new DeltaResult(delta, true);
-        }
-
-        public static DeltaResult interMove(double delta) {
-            return new DeltaResult(delta, false);
-        }
-    }
 }

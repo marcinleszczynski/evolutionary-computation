@@ -15,6 +15,7 @@ import pl.mlsk.algorithm.impl.lab2.Greedy2RegretAlgorithm;
 import pl.mlsk.algorithm.impl.lab2.Greedy2RegretWeightedSum;
 import pl.mlsk.algorithm.impl.lab3.impl.GreedyLocalSearch;
 import pl.mlsk.algorithm.impl.lab3.impl.SteepestLocalSearch;
+import pl.mlsk.algorithm.impl.lab5.MoveEvaluationAlgorithm;
 import pl.mlsk.analyser.Analyser;
 
 @Service
@@ -87,6 +88,9 @@ public class Main {
     @Setter(onMethod_ = @Autowired)
     private CandidateMovesAlgorithm candidateMovesAlgorithm;
 
+    @Setter(onMethod_ = @Autowired)
+    private MoveEvaluationAlgorithm moveEvaluationAlgorithm;
+
 
     private static final String DATA_A = "/TSPA.csv";
     private static final String DATA_B = "/TSPB.csv";
@@ -142,10 +146,12 @@ public class Main {
 //        analyser.analyse(DATA_B, localSteepestNodeRandomStart);
 //        analyser.analyse(DATA_B, localSteepestEdgeRandomStart);
 
-        analyser.analyse(DATA_A, candidateMovesAlgorithm);
-        analyser.analyse(DATA_B, candidateMovesAlgorithm);
+//        analyser.analyse(DATA_A, candidateMovesAlgorithm);
+//        analyser.analyse(DATA_B, candidateMovesAlgorithm);
 
-        analyser.analyse(DATA_A, localSteepestEdgeRandomStart);
-        analyser.analyse(DATA_B, localSteepestEdgeRandomStart);
+//        analyser.analyse(DATA_A, localSteepestEdgeRandomStart);
+//        analyser.analyse(DATA_B, localSteepestEdgeRandomStart);
+
+        analyser.analyse(DATA_A, moveEvaluationAlgorithm);
     }
 }

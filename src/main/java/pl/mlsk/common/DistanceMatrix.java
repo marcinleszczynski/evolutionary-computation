@@ -22,4 +22,8 @@ public class DistanceMatrix {
     public double getDistance(Node node1, Node node2) {
         return matrix[indexes.get(node1)][indexes.get(node2)];
     }
+
+    public int getIndex(Node node) {
+        return indexes.get(node);
+    }
 }
