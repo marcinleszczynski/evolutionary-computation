@@ -4,6 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.mlsk.algorithm.Algorithm;
 import pl.mlsk.algorithm.impl.lab1.RandomSearchAlgorithm;
+import pl.mlsk.algorithm.impl.lab5.dto.Edge;
+import pl.mlsk.algorithm.impl.lab5.dto.Move;
+import pl.mlsk.algorithm.impl.lab5.iterator.MoveIterator;
+import pl.mlsk.algorithm.impl.lab5.validator.MoveValidationResult;
+import pl.mlsk.algorithm.impl.lab5.validator.MoveValidator;
 import pl.mlsk.common.*;
 
 import java.util.*;
@@ -15,6 +20,7 @@ import static java.util.Objects.nonNull;
 public class MoveEvaluationAlgorithm implements Algorithm {
 
     private final RandomSearchAlgorithm randomSearchAlgorithm;
+    private final MoveValidator moveValidator;
 
     @Override
     public Solution solve(AlgorithmInput input, int pos) {
@@ -29,60 +35,74 @@ public class MoveEvaluationAlgorithm implements Algorithm {
             if (!changed) {
                 return solution;
             }
-            applyMoves(pq, solution);
+            Solution newSolution = applyMoves(pq, solution);
+            if (newSolution.equals(solution)) {
+                return newSolution;
+            }
+            solution = newSolution;
         }
     }
 
-    private void applyMoves(PriorityQueue<Move> pq, Solution solution) {
-        PriorityQueue<Move> pqFutureMoves = new PriorityQueue<>(Comparator.comparingDouble(Move::delta));
-        while (!pq.isEmpty()) {
-            Move move = pq.poll();
-            boolean isEdgeRemoved = false;
-            boolean isEdgeOrderChanged = false;
-
-            for (Edge toDelete : move.toDelete()) {
-                int indexLeft = solution.orderedNodes().indexOf(toDelete.node1());
-                int indexRight = solution.orderedNodes().indexOf(toDelete.node2());
-
-                if (indexLeft == -1 || indexRight == -1 || Math.abs(indexLeft - indexRight) > 1) {
-                    isEdgeRemoved = true;
-                }
-
-                if (indexLeft + 1 == indexRight) {
-                    isEdgeOrderChanged = true;
-                }
+    private Solution applyMoves(PriorityQueue<Move> pq, Solution solution) {
+        Set<Move> futureMoves = new HashSet<>();
+        Set<Move> previousFutureMoves = Set.of();
+        while (true) {
+            while (!pq.isEmpty()) {
+                Move move = pq.poll();
+                solution = updateSolution(solution, move, futureMoves);
             }
-            if (!isEdgeRemoved) {
-                if (isEdgeOrderChanged) {
-                    pqFutureMoves.add(move);
-                } else {
-                    solution = move.isEdgeSwap() ? applyEdgeSwap(solution, move) : applyInterMove(solution, move);
-                }
+
+            if (futureMoves.isEmpty() || previousFutureMoves.equals(futureMoves)) {
+                return solution;
             }
+            previousFutureMoves = new HashSet<>(futureMoves);
+            pq.addAll(futureMoves);
+            futureMoves.clear();
         }
     }
 
-    private Solution applyEdgeSwap(Solution solution, Move move) {
+    private Solution updateSolution(Solution solution, Move move, Set<Move> futureMoves) {
+        MoveValidationResult validation = moveValidator.validate(solution, move);
+        if (validation.isValid()) {
+            if (validation.isEdgesOutOfOrder()) {
+                futureMoves.add(move);
+            } else {
+                solution = move.isEdgeSwap() ? applyEdgeSwap(solution, move) : applyInterMove(solution, move);
+            }
+        }
+        return solution;
+    }
+
+    protected Solution applyEdgeSwap(Solution solution, Move move) {
         Map<Node, Node> edgeMap = mapFromSolution(solution);
-        Set<Node> removedNodes = new HashSet<>();
-        for (Edge toAdd : move.toAdd()) {
-            removedNodes.add(toAdd.node1());
-            edgeMap.put(toAdd.node1(), toAdd.node2());
-        }
         for (Edge toDelete : move.toDelete()) {
-            if (removedNodes.contains(toDelete.node1())) {
-                removedNodes.remove(toDelete.node1());
-                Node edgeTo = removedNodes
-                        .stream()
-                        .findFirst()
-                        .orElseThrow(RuntimeException::new);
-                edgeMap.put(toDelete.node2(), edgeTo);
-            }
+            edgeMap.remove(toDelete.node1());
+        }
+        reverseNodes(move, edgeMap);
+        for (Edge toAdd : move.toAdd()) {
+            edgeMap.put(toAdd.node1(), toAdd.node2());
         }
         return buildFromMap(edgeMap, solution);
     }
 
-    private Solution applyInterMove(Solution solution, Move move) {
+    private void reverseNodes(Move move, Map<Node, Node> edgeMap) {
+        List<Edge> toAdd = move.toAdd();
+        Node startReverse = toAdd.getLast().node1();
+        Node endReverse = toAdd.getFirst().node2();
+        Node current = startReverse;
+        Deque<Node> stack = new LinkedList<>();
+        while (current != endReverse) {
+            stack.push(current);
+            current = edgeMap.get(current);
+        }
+        while (!stack.isEmpty()) {
+            Node next = stack.pop();
+            edgeMap.put(current, next);
+            current = next;
+        }
+    }
+
+    protected Solution applyInterMove(Solution solution, Move move) {
         Map<Node, Node> edgeMap = mapFromSolution(solution);
         for (Edge toDelete : move.toDelete()) {
             edgeMap.remove(toDelete.node1());
@@ -93,13 +113,13 @@ public class MoveEvaluationAlgorithm implements Algorithm {
         return buildFromMap(edgeMap, solution);
     }
 
-    private Solution buildFromMap(Map<Node, Node> map, Solution originalSolution) {
+    protected Solution buildFromMap(Map<Node, Node> map, Solution originalSolution) {
         List<Node> result = new ArrayList<>();
         Node start = map.values()
                 .stream()
                 .filter(node -> originalSolution.orderedNodes().contains(node))
-                .sorted(Comparator.comparingInt(node -> originalSolution.orderedNodes().indexOf(node)))
-                .findFirst().orElseThrow(RuntimeException::new);
+                .min(Comparator.comparingInt(node -> originalSolution.orderedNodes().indexOf(node)))
+                .orElseThrow(RuntimeException::new);
         result.add(start);
         Node current = start;
         while (true) {

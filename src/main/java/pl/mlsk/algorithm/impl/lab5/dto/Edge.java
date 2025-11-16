@@ -1,4 +1,4 @@
-package pl.mlsk.algorithm.impl.lab5;
+package pl.mlsk.algorithm.impl.lab5.dto;
 
 import pl.mlsk.common.Node;
 

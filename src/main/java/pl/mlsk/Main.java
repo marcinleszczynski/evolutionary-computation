@@ -153,5 +153,6 @@ public class Main {
 //        analyser.analyse(DATA_B, localSteepestEdgeRandomStart);
 
         analyser.analyse(DATA_A, moveEvaluationAlgorithm);
+        analyser.analyse(DATA_B, moveEvaluationAlgorithm);
     }
 }

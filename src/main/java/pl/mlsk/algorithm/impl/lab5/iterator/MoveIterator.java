@@ -1,7 +1,9 @@
-package pl.mlsk.algorithm.impl.lab5;
+package pl.mlsk.algorithm.impl.lab5.iterator;
 
 import lombok.RequiredArgsConstructor;
 import pl.mlsk.algorithm.impl.lab4.DeltaResult;
+import pl.mlsk.algorithm.impl.lab5.dto.Edge;
+import pl.mlsk.algorithm.impl.lab5.dto.Move;
 import pl.mlsk.common.DistanceMatrix;
 import pl.mlsk.common.NearestNodeMap;
 import pl.mlsk.common.Node;
@@ -53,8 +55,8 @@ public class MoveIterator implements Iterator<Move> {
                 Edge toAdd1 = new Edge(currentNode, candidateNode);
                 Edge toAdd2 = new Edge(nodeNextToCurrentNode, nodeNextToCandidateNode);
 
-                Edge toRemove1 = isVariant0 ? new Edge(currentNode, nodeNextToCurrentNode) : new Edge(nodeNextToCurrentNode, currentNode);
-                Edge toRemove2 = isVariant0 ? new Edge(candidateNode, nodeNextToCandidateNode) : new Edge(nodeNextToCandidateNode, candidateNode);
+                Edge toRemove1 = isVariant0 ? new Edge(nodeNextToCurrentNode, currentNode) : new Edge(currentNode, nodeNextToCurrentNode);
+                Edge toRemove2 = isVariant0 ? new Edge(nodeNextToCandidateNode, candidateNode) : new Edge(candidateNode, nodeNextToCandidateNode);
                 List<Edge> toAdd = List.of(toAdd1, toAdd2);
                 List<Edge> toRemove = List.of(toRemove1, toRemove2);
                 updateIndexes();
