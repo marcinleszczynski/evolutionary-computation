@@ -73,29 +73,8 @@ public class MoveIterator implements Iterator<Move> {
                 return new Move(toAdd, toRemove, delta.delta(), true);
             }
         } else {
-            if (nodeIndex < nextNextToCurrentNodeIndex) {
-                Edge toAdd1 = new Edge(currentNode, candidateNode);
-                Edge toAdd2 = new Edge(candidateNode, nodeNextNextToCurrentNode);
-
-                Edge toRemove1 = new Edge(currentNode, nodeNextToCurrentNode);
-                Edge toRemove2 = new Edge(nodeNextToCurrentNode, nodeNextNextToCurrentNode);
-
-                List<Edge> toAdd = List.of(toAdd1, toAdd2);
-                List<Edge> toRemove = List.of(toRemove1, toRemove2);
-                updateIndexes();
-                return new Move(toAdd, toRemove, delta.delta(), false);
-            } else {
-                Edge toAdd1 = new Edge(candidateNode, currentNode);
-                Edge toAdd2 = new Edge(nodeNextNextToCurrentNode, candidateNode);
-
-                Edge toRemove1 = new Edge(nodeNextToCurrentNode, currentNode);
-                Edge toRemove2 = new Edge(nodeNextNextToCurrentNode, nodeNextToCurrentNode);
-
-                List<Edge> toAdd = List.of(toAdd1, toAdd2);
-                List<Edge> toRemove = List.of(toRemove1, toRemove2);
-                updateIndexes();
-                return new Move(toAdd, toRemove, delta.delta(), false);
-            }
+            updateIndexes();
+            return new Move(null, null, delta.delta(), false, nodeNextToCurrentNode, candidateNode);
         }
     }
 

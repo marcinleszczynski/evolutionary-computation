@@ -13,10 +13,6 @@ public class RandomUtils {
         return RANDOM.get();
     }
 
-    public static int nextInt(int min, int max) {
-        return getRandom().nextInt(min, max);
-    }
-
     public static int nextInt(int max) {
         return getRandom().nextInt(max);
     }

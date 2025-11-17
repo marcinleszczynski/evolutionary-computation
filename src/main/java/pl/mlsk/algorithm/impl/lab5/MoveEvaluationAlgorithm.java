@@ -32,7 +32,7 @@ public class MoveEvaluationAlgorithm implements Algorithm {
         PriorityQueue<Move> pq = new PriorityQueue<>(Comparator.comparingDouble(Move::delta));
         while (true) {
             boolean changed = findMoves(pq, solution, distanceMatrix, nearestNodeMap);
-            if (!changed) {
+            if (!changed || pq.isEmpty()) {
                 return solution;
             }
             Solution newSolution = applyMoves(pq, solution);
@@ -44,31 +44,27 @@ public class MoveEvaluationAlgorithm implements Algorithm {
     }
 
     private Solution applyMoves(PriorityQueue<Move> pq, Solution solution) {
-        Set<Move> futureMoves = new HashSet<>();
-        Set<Move> previousFutureMoves = Set.of();
-        while (true) {
-            while (!pq.isEmpty()) {
-                Move move = pq.poll();
-                solution = updateSolution(solution, move, futureMoves);
+        while (!pq.isEmpty()) {
+            Move move;
+            List<Move> skippedMoves = new ArrayList<>();
+            MoveValidationResult validation;
+            while (true) {
+                if (pq.isEmpty()) {
+                    return solution;
+                }
+                move = pq.poll();
+                validation = moveValidator.validate(solution, move);
+                if (!validation.isValid()) {
+                    continue;
+                }
+                if (validation.isEdgesOutOfOrder()) {
+                    skippedMoves.add(move);
+                    continue;
+                }
+                break;
             }
-
-            if (futureMoves.isEmpty() || previousFutureMoves.equals(futureMoves)) {
-                return solution;
-            }
-            previousFutureMoves = new HashSet<>(futureMoves);
-            pq.addAll(futureMoves);
-            futureMoves.clear();
-        }
-    }
-
-    private Solution updateSolution(Solution solution, Move move, Set<Move> futureMoves) {
-        MoveValidationResult validation = moveValidator.validate(solution, move);
-        if (validation.isValid()) {
-            if (validation.isEdgesOutOfOrder()) {
-                futureMoves.add(move);
-            } else {
-                solution = move.isEdgeSwap() ? applyEdgeSwap(solution, move) : applyInterMove(solution, move);
-            }
+            pq.addAll(skippedMoves);
+            solution = move.isEdgeSwap() ? applyEdgeSwap(solution, move) : applyInterMove(solution, move);
         }
         return solution;
     }
@@ -103,14 +99,12 @@ public class MoveEvaluationAlgorithm implements Algorithm {
     }
 
     protected Solution applyInterMove(Solution solution, Move move) {
-        Map<Node, Node> edgeMap = mapFromSolution(solution);
-        for (Edge toDelete : move.toDelete()) {
-            edgeMap.remove(toDelete.node1());
+        Solution newSolution = new Solution(new ArrayList<>(solution.orderedNodes()));
+        newSolution.orderedNodes().set(solution.orderedNodes().indexOf(move.nodeToRemove()), move.nodeToAdd());
+        if (newSolution.evaluate() > solution.evaluate()) {
+            return solution;
         }
-        for (Edge toAdd : move.toAdd()) {
-            edgeMap.put(toAdd.node1(), toAdd.node2());
-        }
-        return buildFromMap(edgeMap, solution);
+        return newSolution;
     }
 
     protected Solution buildFromMap(Map<Node, Node> map, Solution originalSolution) {

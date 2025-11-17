@@ -35,12 +35,11 @@ public class Visualizer {
             newNode.setAttribute("ui.style", formatColor(color));
         });
         for (int i = 1; i < resultNodes.size(); i++) {
-            addGraphEdge(graph, resultNodes.get(i-1), resultNodes.get(i));
+            addGraphEdge(graph, resultNodes.get(i - 1), resultNodes.get(i));
         }
         addGraphEdge(graph, resultNodes.getLast(), resultNodes.getFirst());
         graph.display(false);
     }
-
 
 
     private void addGraphEdge(Graph graph, Node from, Node to) {

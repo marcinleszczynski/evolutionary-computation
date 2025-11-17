@@ -13,14 +13,14 @@ public class MoveValidator {
 
     public MoveValidationResult validate(Solution solution, Move move) {
         MoveValidationResult result = new MoveValidationResult();
-        verifyEdgesToRemoveStillInSolution(result, solution, move);
-        if (!result.isValid())
-            return result;
         if (move.isEdgeSwap()) {
-            verifyEdgesToAddNotInSolution(result, solution, move);
+            verifyEdgesToRemoveStillInSolution(result, solution, move);
+            if (!result.isValid())
+                return result;
             verifyFirstEdgeBeforeSecondEdge(result, solution, move);
         }
         if (move.isInterMove()) {
+            verifyNodeToRemoveInSolution(result, solution, move);
             verifyNodeToAddIsNotInSolution(result, solution, move);
         }
         return result;
@@ -42,27 +42,33 @@ public class MoveValidator {
             int indexLeft = solution.orderedNodes().indexOf(toDelete.node1());
             int indexRight = solution.orderedNodes().indexOf(toDelete.node2());
 
-            if (indexLeft == -1 || indexRight == -1 || indexLeft + 1 != indexRight) {
+            if (indexLeft == -1 || indexRight == -1) {
                 result.invalid();
                 break;
             }
-        }
-    }
 
-    private void verifyEdgesToAddNotInSolution(MoveValidationResult result, Solution solution, Move move) {
-        for (Edge toAdd : move.toAdd()) {
-            int indexLeft = solution.orderedNodes().indexOf(toAdd.node1());
-            int indexRight = solution.orderedNodes().indexOf(toAdd.node2());
-            if (indexLeft == -1 || indexRight == -1 || Math.abs(indexLeft - indexRight) == 1) {
+            if (indexRight + 1 == indexLeft) {
+                result.edgesOutOfOrder();
+            } else {
+                result.setEdgesOutOfOrder(false);
+            }
+
+            if (indexLeft + 1 != indexRight) {
                 result.invalid();
-                break;
             }
         }
     }
 
     private void verifyNodeToAddIsNotInSolution(MoveValidationResult result, Solution solution, Move move) {
-        Node nodeToAdd = move.toAdd().getFirst().node2();
+        Node nodeToAdd = move.nodeToAdd();
         if (solution.orderedNodes().contains(nodeToAdd)) {
+            result.invalid();
+        }
+    }
+
+    private void verifyNodeToRemoveInSolution(MoveValidationResult result, Solution solution, Move move) {
+        Node nodeToRemove = move.nodeToRemove();
+        if (!solution.orderedNodes().contains(nodeToRemove)) {
             result.invalid();
         }
     }

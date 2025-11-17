@@ -146,8 +146,8 @@ public class Main {
 //        analyser.analyse(DATA_B, localSteepestNodeRandomStart);
 //        analyser.analyse(DATA_B, localSteepestEdgeRandomStart);
 
-//        analyser.analyse(DATA_A, candidateMovesAlgorithm);
-//        analyser.analyse(DATA_B, candidateMovesAlgorithm);
+        analyser.analyse(DATA_A, candidateMovesAlgorithm);
+        analyser.analyse(DATA_B, candidateMovesAlgorithm);
 
 //        analyser.analyse(DATA_A, localSteepestEdgeRandomStart);
 //        analyser.analyse(DATA_B, localSteepestEdgeRandomStart);
