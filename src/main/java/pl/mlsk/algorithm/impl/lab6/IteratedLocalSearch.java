@@ -22,7 +22,7 @@ public class IteratedLocalSearch implements Algorithm {
     private final LocalSearch localSearch;
     private final RandomSearchAlgorithm randomSearchAlgorithm;
 
-    private static final long RUNNING_TIME = 5_000_000_000L;
+    private static final long RUNNING_TIME = 15_000_000_000L;
 
     @Override
     public Solution solve(AlgorithmInput input, int pos) {
