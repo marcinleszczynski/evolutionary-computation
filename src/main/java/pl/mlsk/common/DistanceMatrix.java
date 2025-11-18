@@ -3,6 +3,7 @@ package pl.mlsk.common;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class DistanceMatrix {
 
@@ -23,7 +24,7 @@ public class DistanceMatrix {
         return matrix[indexes.get(node1)][indexes.get(node2)];
     }
 
-    public int getIndex(Node node) {
-        return indexes.get(node);
+    public Stream<Node> streamNodes() {
+        return indexes.keySet().stream();
     }
 }

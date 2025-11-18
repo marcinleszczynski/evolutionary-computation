@@ -23,13 +23,13 @@ public class Analyser {
     private final NodeReader reader;
     private final Visualizer visualizer;
 
-    public void analyse(String pathToData, Algorithm algorithm) {
+    public void analyse(String pathToData, Algorithm algorithm, int times) {
         AlgorithmInput algorithmInput = reader.readNodes(pathToData);
         List<Node> nodes = algorithmInput.nodes();
 
 
-        List<PartialResult> results = IntStream.range(0, nodes.size())
-//                .parallel()
+        List<PartialResult> results = IntStream.range(0, times)
+                .parallel()
                 .mapToObj(i -> {
                     long start = System.nanoTime();
                     Solution solution = algorithm.solve(algorithmInput, i);
@@ -52,6 +52,10 @@ public class Analyser {
                 bestSolution,
                 nodes
         );
+    }
+
+    public void analyse(String pathToData, Algorithm algorithm) {
+        analyse(pathToData, algorithm, 200);
     }
 
     private void handleResults(String algorithmName, List<Double> scores, List<Double> times, Solution bestSolution, List<Node> nodes) {

@@ -16,6 +16,8 @@ import pl.mlsk.algorithm.impl.lab2.Greedy2RegretWeightedSum;
 import pl.mlsk.algorithm.impl.lab3.impl.GreedyLocalSearch;
 import pl.mlsk.algorithm.impl.lab3.impl.SteepestLocalSearch;
 import pl.mlsk.algorithm.impl.lab5.MoveEvaluationAlgorithm;
+import pl.mlsk.algorithm.impl.lab6.IteratedLocalSearch;
+import pl.mlsk.algorithm.impl.lab6.MultipleStartLocalSearch;
 import pl.mlsk.analyser.Analyser;
 
 @Service
@@ -91,6 +93,12 @@ public class Main {
     @Setter(onMethod_ = @Autowired)
     private MoveEvaluationAlgorithm moveEvaluationAlgorithm;
 
+    @Setter(onMethod_ = @Autowired)
+    private MultipleStartLocalSearch multipleStartLocalSearch;
+
+    @Setter(onMethod_ = @Autowired)
+    private IteratedLocalSearch iteratedLocalSearch;
+
 
     private static final String DATA_A = "/TSPA.csv";
     private static final String DATA_B = "/TSPB.csv";
@@ -146,13 +154,19 @@ public class Main {
 //        analyser.analyse(DATA_B, localSteepestNodeRandomStart);
 //        analyser.analyse(DATA_B, localSteepestEdgeRandomStart);
 
-        analyser.analyse(DATA_A, candidateMovesAlgorithm);
-        analyser.analyse(DATA_B, candidateMovesAlgorithm);
+//        analyser.analyse(DATA_A, candidateMovesAlgorithm);
+//        analyser.analyse(DATA_B, candidateMovesAlgorithm);
 
 //        analyser.analyse(DATA_A, localSteepestEdgeRandomStart);
 //        analyser.analyse(DATA_B, localSteepestEdgeRandomStart);
 
-        analyser.analyse(DATA_A, moveEvaluationAlgorithm);
-        analyser.analyse(DATA_B, moveEvaluationAlgorithm);
+//        analyser.analyse(DATA_A, moveEvaluationAlgorithm);
+//        analyser.analyse(DATA_B, moveEvaluationAlgorithm);
+
+//        analyser.analyse(DATA_A, multipleStartLocalSearch, 20);
+        analyser.analyse(DATA_A, iteratedLocalSearch, 20);
+
+//        analyser.analyse(DATA_B, multipleStartLocalSearch, 20);
+        analyser.analyse(DATA_B, iteratedLocalSearch, 20);
     }
 }
