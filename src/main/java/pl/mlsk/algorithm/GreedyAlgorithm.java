@@ -16,13 +16,28 @@ public abstract class GreedyAlgorithm implements Algorithm {
         List<Node> nodes = input.nodes();
         DistanceMatrix distanceMatrix = input.distanceMatrix();
         long nodesToTake = nodesToTake(nodes);
-        ArrayList<Node> result = new ArrayList<>();
-        ArrayList<Node> available = new ArrayList<>(nodes);
+        List<Node> result = new ArrayList<>();
+        List<Node> available = new ArrayList<>(nodes);
         result.add(available.get(startNode));
         available.remove(startNode);
 
         for (long i = 1; i < nodesToTake; i++) {
             NodeWithIndex nextNode = bestNextNode(distanceMatrix, available, result);
+            result.add(nextNode.index(), nextNode.node());
+            available.remove(nextNode.node());
+        }
+
+        return new Solution(result);
+    }
+
+    public Solution solveForCurrent(AlgorithmInput input, Solution current) {
+        long nodesToTake = nodesToTake(input.nodes()) - current.orderedNodes().size();
+        List<Node> result = new ArrayList<>(current.orderedNodes());
+        List<Node> available = new ArrayList<>(input.nodes());
+        available.removeAll(result);
+
+        for (long i = 0; i < nodesToTake; i++) {
+            NodeWithIndex nextNode = bestNextNode(input.distanceMatrix(), available, result);
             result.add(nextNode.index(), nextNode.node());
             available.remove(nextNode.node());
         }

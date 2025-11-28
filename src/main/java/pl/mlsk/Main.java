@@ -18,6 +18,8 @@ import pl.mlsk.algorithm.impl.lab3.impl.SteepestLocalSearch;
 import pl.mlsk.algorithm.impl.lab5.MoveEvaluationAlgorithm;
 import pl.mlsk.algorithm.impl.lab6.IteratedLocalSearch;
 import pl.mlsk.algorithm.impl.lab6.MultipleStartLocalSearch;
+import pl.mlsk.algorithm.impl.lab7.impl.LargeNeighborHoodSearchNoLocal;
+import pl.mlsk.algorithm.impl.lab7.impl.LargeNeighborHoodSearchYesLocal;
 import pl.mlsk.analyser.Analyser;
 
 @Service
@@ -99,6 +101,11 @@ public class Main {
     @Setter(onMethod_ = @Autowired)
     private IteratedLocalSearch iteratedLocalSearch;
 
+    @Setter(onMethod_ = @Autowired)
+    private LargeNeighborHoodSearchNoLocal largeNeighborhoodSearchNoLocal;
+
+    @Setter(onMethod_ = @Autowired)
+    private LargeNeighborHoodSearchYesLocal largeNeighborHoodSearchYesLocal;
 
     private static final String DATA_A = "/TSPA.csv";
     private static final String DATA_B = "/TSPB.csv";
@@ -164,9 +171,15 @@ public class Main {
 //        analyser.analyse(DATA_B, moveEvaluationAlgorithm);
 
 //        analyser.analyse(DATA_A, multipleStartLocalSearch, 20);
-        analyser.analyse(DATA_A, iteratedLocalSearch, 20);
+//        analyser.analyse(DATA_A, iteratedLocalSearch, 20);
 
 //        analyser.analyse(DATA_B, multipleStartLocalSearch, 20);
-        analyser.analyse(DATA_B, iteratedLocalSearch, 20);
+//        analyser.analyse(DATA_B, iteratedLocalSearch, 20);
+
+//        analyser.analyse(DATA_A, largeNeighborhoodSearchNoLocal, 20); // 252
+//        analyser.analyse(DATA_B, largeNeighborhoodSearchNoLocal, 20); // 260
+
+//        analyser.analyse(DATA_A, largeNeighborHoodSearchYesLocal, 20); // 271
+//        analyser.analyse(DATA_B, largeNeighborHoodSearchYesLocal, 20); // 208
     }
 }

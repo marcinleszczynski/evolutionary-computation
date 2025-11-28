@@ -12,7 +12,7 @@ import java.util.List;
 public class NodeReader {
 
     private static final String SEMICOLON = ";";
-    private static final int CANDIDATE_NODES_LAB4 = 10;
+    private static final int CANDIDATE_NODES_LAB4 = 199;
 
     public AlgorithmInput readNodes(String path) {
         InputStream in = getClass().getResourceAsStream(path);

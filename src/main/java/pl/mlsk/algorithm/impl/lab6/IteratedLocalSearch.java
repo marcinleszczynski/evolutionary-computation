@@ -22,7 +22,9 @@ public class IteratedLocalSearch implements Algorithm {
     private final LocalSearch localSearch;
     private final RandomSearchAlgorithm randomSearchAlgorithm;
 
-    private static final long RUNNING_TIME = 15_000_000_000L;
+    //    private static final long RUNNING_TIME = 18_600_000_000L; // DATASET A: 18_600_000_000L
+    private static final long RUNNING_TIME = 19_600_000_000L; // DATASET B: 19_600_000_000L
+
 
     @Override
     public Solution solve(AlgorithmInput input, int pos) {
@@ -30,6 +32,7 @@ public class IteratedLocalSearch implements Algorithm {
         DistanceMatrix distanceMatrix = input.distanceMatrix();
         Solution result = localSearch.localSearch(randomSearchAlgorithm.solve(input, pos), distanceMatrix);
         double bestValue = result.evaluate();
+        long lsCount = 0;
         while (System.nanoTime() - startTime < RUNNING_TIME) {
             Solution perturbation = perturbation(result);
             Solution afterLocalSearch = localSearch.localSearch(perturbation, distanceMatrix);
@@ -38,7 +41,9 @@ public class IteratedLocalSearch implements Algorithm {
                 bestValue = nextValue;
                 result = afterLocalSearch;
             }
+            lsCount++;
         }
+        IO.println(lsCount);
         return result;
     }
 
@@ -50,7 +55,7 @@ public class IteratedLocalSearch implements Algorithm {
     private Solution perturbation(Solution solution) {
         List<Node> nodes = new ArrayList<>(solution.orderedNodes());
         Set<Integer> indexes = new HashSet<>();
-        while (indexes.size() < 10) {
+        while (indexes.size() < 3) {
             int next = RandomUtils.insecure().randomInt(0, nodes.size());
             indexes.add(next);
         }
