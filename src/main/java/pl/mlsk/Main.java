@@ -20,7 +20,10 @@ import pl.mlsk.algorithm.impl.lab6.IteratedLocalSearch;
 import pl.mlsk.algorithm.impl.lab6.MultipleStartLocalSearch;
 import pl.mlsk.algorithm.impl.lab7.impl.LargeNeighborHoodSearchNoLocal;
 import pl.mlsk.algorithm.impl.lab7.impl.LargeNeighborHoodSearchYesLocal;
+import pl.mlsk.algorithm.impl.lab8.ConvexityTester;
 import pl.mlsk.analyser.Analyser;
+import pl.mlsk.common.AlgorithmInput;
+import pl.mlsk.common.NodeReader;
 
 @Service
 @ComponentScan("pl.mlsk")
@@ -107,6 +110,27 @@ public class Main {
     @Setter(onMethod_ = @Autowired)
     private LargeNeighborHoodSearchYesLocal largeNeighborHoodSearchYesLocal;
 
+    @Setter(onMethod_ = {@Autowired, @Qualifier("ctASN")})
+    private ConvexityTester ctASN;
+
+    @Setter(onMethod_ = {@Autowired, @Qualifier("ctASE")})
+    private ConvexityTester ctASE;
+
+    @Setter(onMethod_ = {@Autowired, @Qualifier("ctBSN")})
+    private ConvexityTester ctBSN;
+
+    @Setter(onMethod_ = {@Autowired, @Qualifier("ctBSE")})
+    private ConvexityTester ctBSE;
+
+    @Setter(onMethod_ = {@Autowired, @Qualifier("ctGSN")})
+    private ConvexityTester ctGSN;
+
+    @Setter(onMethod_ = {@Autowired, @Qualifier("ctGSE")})
+    private ConvexityTester ctGSE;
+
+    @Setter(onMethod_ = {@Autowired})
+    private NodeReader nodeReader;
+
     private static final String DATA_A = "/TSPA.csv";
     private static final String DATA_B = "/TSPB.csv";
 
@@ -181,5 +205,10 @@ public class Main {
 
 //        analyser.analyse(DATA_A, largeNeighborHoodSearchYesLocal, 20); // 271
 //        analyser.analyse(DATA_B, largeNeighborHoodSearchYesLocal, 20); // 208
+
+        AlgorithmInput dataA = nodeReader.readNodes(DATA_A);
+        AlgorithmInput dataB = nodeReader.readNodes(DATA_B);
+        ctGSE.test(dataA);
+        ctGSE.test(dataB);
     }
 }

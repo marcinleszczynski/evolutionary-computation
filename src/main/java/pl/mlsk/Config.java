@@ -14,6 +14,15 @@ import pl.mlsk.algorithm.impl.lab3.impl.GreedyLocalSearch;
 import pl.mlsk.algorithm.impl.lab3.impl.SteepestLocalSearch;
 import pl.mlsk.algorithm.impl.lab3.impl.iterator.grouped.LocalEdgeIterator;
 import pl.mlsk.algorithm.impl.lab3.impl.iterator.grouped.LocalNodeIterator;
+import pl.mlsk.algorithm.impl.lab6.IteratedLocalSearch;
+import pl.mlsk.algorithm.impl.lab8.ConvexityTester;
+import pl.mlsk.algorithm.impl.lab8.comparator.SimilarityComparator;
+import pl.mlsk.algorithm.impl.lab8.comparator.impl.AverageSimilarityComparator;
+import pl.mlsk.algorithm.impl.lab8.comparator.impl.BestSimilarityComparator;
+import pl.mlsk.algorithm.impl.lab8.comparator.impl.GoodSimilarityComparator;
+import pl.mlsk.algorithm.impl.lab8.plot.ConvexityPlotService;
+import pl.mlsk.algorithm.impl.lab8.similarity.impl.EdgeSimilarityMeasure;
+import pl.mlsk.algorithm.impl.lab8.similarity.impl.NodeSimilarityMeasure;
 
 @Configuration
 @RequiredArgsConstructor
@@ -98,5 +107,89 @@ public class Config {
     @Bean(name = "localSteepestEdgeNN")
     public SteepestLocalSearch localSteepestEdgeNN(NearestNeighborAnyNode greedyAlgorithm) {
         return new SteepestLocalSearch(greedyAlgorithm, LocalEdgeIterator::new);
+    }
+
+    @Bean(name = "averageSimilarityNode")
+    public AverageSimilarityComparator averageSimilarityNode(NodeSimilarityMeasure similarityMeasure) {
+        return new AverageSimilarityComparator(similarityMeasure);
+    }
+
+    @Bean(name = "averageSimilarityEdge")
+    public AverageSimilarityComparator averageSimilarityEdge(EdgeSimilarityMeasure similarityMeasure) {
+        return new AverageSimilarityComparator(similarityMeasure);
+    }
+
+    @Bean(name = "bestSimilarityNode")
+    public BestSimilarityComparator bestSimilarityNode(NodeSimilarityMeasure similarityMeasure) {
+        return new BestSimilarityComparator(similarityMeasure);
+    }
+
+    @Bean(name = "bestSimilarityEdge")
+    public BestSimilarityComparator bestSimilarityEdge(EdgeSimilarityMeasure similarityMeasure) {
+        return new BestSimilarityComparator(similarityMeasure);
+    }
+
+    @Bean(name = "goodSimilarityNode")
+    public GoodSimilarityComparator goodSimilarityNode(NodeSimilarityMeasure sm, IteratedLocalSearch ils) {
+        return new GoodSimilarityComparator(sm, ils);
+    }
+
+    @Bean(name = "goodSimilarityEdge")
+    public GoodSimilarityComparator goodSimilarityEdge(EdgeSimilarityMeasure sm, IteratedLocalSearch ils) {
+        return new GoodSimilarityComparator(sm, ils);
+    }
+
+    @Bean(name = "ctASN")
+    public ConvexityTester ctASN(
+            @Qualifier("averageSimilarityNode") SimilarityComparator sc,
+            @Qualifier("localGreedyEdgeRandomStart") GreedyLocalSearch gls,
+            ConvexityPlotService cps
+    ) {
+        return new ConvexityTester(sc, gls, cps);
+    }
+
+    @Bean(name = "ctASE")
+    public ConvexityTester ctASE(
+            @Qualifier("averageSimilarityEdge") SimilarityComparator sc,
+            @Qualifier("localGreedyEdgeRandomStart") GreedyLocalSearch gls,
+            ConvexityPlotService cps
+    ) {
+        return new ConvexityTester(sc, gls, cps);
+    }
+
+    @Bean(name = "ctBSN")
+    public ConvexityTester ctBSN(
+            @Qualifier("bestSimilarityNode") SimilarityComparator sc,
+            @Qualifier("localGreedyEdgeRandomStart") GreedyLocalSearch gls,
+            ConvexityPlotService cps
+    ) {
+        return new ConvexityTester(sc, gls, cps);
+    }
+
+    @Bean(name = "ctBSE")
+    public ConvexityTester ctBSE(
+            @Qualifier("bestSimilarityEdge") SimilarityComparator sc,
+            @Qualifier("localGreedyEdgeRandomStart") GreedyLocalSearch gls,
+            ConvexityPlotService cps
+    ) {
+        return new ConvexityTester(sc, gls, cps);
+    }
+
+    @Bean(name = "ctGSN")
+    public ConvexityTester ctGSN(
+            @Qualifier("goodSimilarityNode") SimilarityComparator sc,
+            @Qualifier("localGreedyEdgeRandomStart") GreedyLocalSearch gls,
+            ConvexityPlotService cps
+    ) {
+        return new ConvexityTester(sc, gls, cps);
+    }
+
+    @Bean(name = "ctGSE")
+    public ConvexityTester ctGSE(
+            @Qualifier("goodSimilarityEdge") SimilarityComparator sc,
+            @Qualifier("localGreedyEdgeRandomStart") GreedyLocalSearch gls,
+            ConvexityPlotService cps
+    ) {
+        return new ConvexityTester(sc, gls, cps);
     }
 }

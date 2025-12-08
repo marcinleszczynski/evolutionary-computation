@@ -10,6 +10,7 @@ import pl.mlsk.algorithm.impl.lab5.iterator.MoveIterator;
 import pl.mlsk.algorithm.impl.lab5.validator.MoveValidationResult;
 import pl.mlsk.algorithm.impl.lab5.validator.MoveValidator;
 import pl.mlsk.common.*;
+import pl.mlsk.utils.MapUtils;
 
 import java.util.*;
 
@@ -70,7 +71,7 @@ public class MoveEvaluationAlgorithm implements Algorithm {
     }
 
     protected Solution applyEdgeSwap(Solution solution, Move move) {
-        Map<Node, Node> edgeMap = mapFromSolution(solution);
+        Map<Node, Node> edgeMap = MapUtils.mapFromSolution(solution);
         for (Edge toDelete : move.toDelete()) {
             edgeMap.remove(toDelete.node1());
         }
@@ -78,7 +79,7 @@ public class MoveEvaluationAlgorithm implements Algorithm {
         for (Edge toAdd : move.toAdd()) {
             edgeMap.put(toAdd.node1(), toAdd.node2());
         }
-        return buildFromMap(edgeMap, solution);
+        return MapUtils.buildFromMap(edgeMap, solution);
     }
 
     private void reverseNodes(Move move, Map<Node, Node> edgeMap) {
@@ -105,34 +106,6 @@ public class MoveEvaluationAlgorithm implements Algorithm {
             return solution;
         }
         return newSolution;
-    }
-
-    protected Solution buildFromMap(Map<Node, Node> map, Solution originalSolution) {
-        List<Node> result = new ArrayList<>();
-        Node start = map.values()
-                .stream()
-                .filter(node -> originalSolution.orderedNodes().contains(node))
-                .min(Comparator.comparingInt(node -> originalSolution.orderedNodes().indexOf(node)))
-                .orElseThrow(RuntimeException::new);
-        result.add(start);
-        Node current = start;
-        while (true) {
-            current = map.get(current);
-            if (current == start)
-                return new Solution(result);
-            result.add(current);
-        }
-    }
-
-    private Map<Node, Node> mapFromSolution(Solution solution) {
-        Map<Node, Node> nodeMap = new HashMap<>();
-        for (int i = 1; i < solution.orderedNodes().size(); i++) {
-            Node nodeLeft = solution.orderedNodes().get(i - 1);
-            Node nodeRight = solution.orderedNodes().get(i);
-            nodeMap.put(nodeLeft, nodeRight);
-        }
-        nodeMap.put(solution.orderedNodes().getLast(), solution.orderedNodes().getFirst());
-        return nodeMap;
     }
 
     private boolean findMoves(PriorityQueue<Move> pq, Solution solution, DistanceMatrix distanceMatrix, NearestNodeMap nearestNodeMap) {

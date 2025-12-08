@@ -29,6 +29,7 @@ dependencies {
     implementation 'org.apache.commons:commons-collections4:4.5.0'
     implementation 'org.springframework:spring-context:7.0.0-M9'
     implementation 'org.springframework:spring-core:7.0.0-M9'
+    implementation 'org.knowm.xchart:xchart:3.8.8'
     testImplementation 'org.springframework.boot:spring-boot-starter-test:4.0.0-M3'
 }
 
